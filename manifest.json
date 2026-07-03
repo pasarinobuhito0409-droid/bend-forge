@@ -1,0 +1,19 @@
+{
+  "name": "BEND FORGE ── 板金×設計 朝15分道場",
+  "short_name": "BEND FORGE",
+  "description": "触って曲げて覚える、板金設計の3D教科書",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05090b",
+  "theme_color": "#070a10",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

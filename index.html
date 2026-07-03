@@ -1,0 +1,2261 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>BEND FORGE ── 板金×設計 朝15分道場</title>
+<meta name="theme-color" content="#070a10">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse 70% 40% at 20% 0%, rgba(255,157,77,0.06), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 100%, rgba(79,209,255,0.07), transparent),
+      #05090b;
+    color: #dfe9f5;
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Meiryo", system-ui, sans-serif;
+    overscroll-behavior-y: contain;
+  }
+  #bgfx { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+  #app { position: relative; z-index: 1; max-width: 470px; margin: 0 auto; padding: 18px 16px 40px; min-height: 100%; }
+
+  .goalbanner {
+    margin-top: 14px; padding: 10px 13px; border-radius: 12px; text-align: center;
+    border: 1px solid rgba(255,157,77,0.5); background: rgba(255,157,77,0.06);
+    font-size: 12.5px; font-weight: 800; color: #ffcf9e;
+  }
+  .invmeter {
+    margin-top: 12px; padding: 12px 14px; border-radius: 14px;
+    border: 1px solid #1d2c42; background: linear-gradient(165deg, #0c1420, #0a0f18);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .invmeter svg { flex: none; filter: drop-shadow(0 0 8px rgba(255,157,77,0.35)); }
+  .invmeter .txt { font-size: 12.5px; color: #9fb4cb; line-height: 1.7; }
+  .invmeter .txt b { color: #ffcf9e; font-size: 14px; }
+  .invmeter .bar { margin-top: 6px; height: 8px; border-radius: 5px; background: #101825; overflow: hidden; }
+  .invmeter .bar div { height: 100%; width: 0%; background: linear-gradient(90deg, #4fd1ff, #ff9d4d); transition: width 0.8s; }
+
+  #stageWrap { display: none; }
+  #stageWrap.mini .stage3d { height: 30vh; max-height: 230px; min-height: 180px; }
+
+  .teaser {
+    margin-top: 16px; padding: 13px 15px; border-radius: 13px; text-align: left;
+    border: 1px solid rgba(255,157,77,0.45); background: rgba(255,157,77,0.06);
+    font-size: 14px; color: #f5dfc8; line-height: 1.75;
+  }
+  .teaser b { color: #ffb45d; }
+
+  .cta {
+    display: block; width: 100%; margin-top: 14px; padding: 14px; border: none; border-radius: 13px;
+    font: inherit; font-weight: 900; font-size: 16px; color: #1a0d02; cursor: pointer;
+    background: linear-gradient(135deg, #ff9d4d, #ffc37a);
+    box-shadow: 0 0 18px rgba(255,157,77,0.3);
+  }
+  .cta.alt {
+    color: #efe8ff; border: 1.5px solid rgba(160,123,255,0.65);
+    background: linear-gradient(135deg, rgba(160,123,255,0.28), rgba(79,209,255,0.16));
+    box-shadow: 0 0 14px rgba(160,123,255,0.25);
+  }
+  .cta:disabled { opacity: 0.35; box-shadow: none; }
+  .opt {
+    display: block; width: 100%; margin-top: 10px; padding: 15px 16px; border-radius: 13px;
+    border: 1.5px solid #2a3c56; background: #0b1220; color: #dfeaf6;
+    font: inherit; font-size: 16px; font-weight: 700; text-align: left; cursor: pointer;
+  }
+  .opt.correct { border-color: #3ef0a0; color: #d9ffee; background: rgba(62,240,160,0.10); box-shadow: 0 0 14px rgba(62,240,160,0.25); }
+  .opt.wrong { border-color: #ff5d4d; color: #ffd9d0; background: rgba(255,93,77,0.08); }
+  .opt.dim { opacity: 0.45; }
+
+  .home-logo {
+    text-align: center; font-size: 30px; font-weight: 900; letter-spacing: 5px; color: #fff3e6;
+    margin-top: 12px; text-shadow: 0 0 16px rgba(255,157,77,0.8), 0 0 44px rgba(255,157,77,0.3);
+  }
+  .home-sub { text-align: center; font-size: 13px; color: #9fb4cb; margin: 6px 0 18px; }
+  .resume {
+    display: block; width: 100%; padding: 15px; border: 1px solid rgba(255,157,77,0.6); border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255,157,77,0.20), rgba(79,209,255,0.14));
+    color: #fff3e6; font: inherit; font-weight: 900; font-size: 16px; cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,157,77,0.22); text-align: center;
+  }
+  .resume small { display: block; font-weight: 600; font-size: 11.5px; color: #ffcf9e; margin-top: 3px; }
+  .prog-row { display: flex; align-items: center; gap: 10px; margin: 16px 0 6px; font-size: 12px; color: #8fa6bd; }
+  .prog-bar { flex: 1; height: 9px; border-radius: 5px; background: #101825; overflow: hidden; }
+  .prog-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d4d, #4fd1ff); border-radius: 5px; transition: width 0.6s; }
+  .chap-title { font-size: 13.5px; font-weight: 800; color: #bcd2e8; margin: 16px 0 10px; }
+  .chap-title span { color: #5d7690; font-weight: 600; font-size: 11px; }
+  .nodes { display: flex; flex-wrap: wrap; gap: 12px 14px; }
+  .node { width: 56px; text-align: center; cursor: pointer; border: none; background: none; font: inherit; padding: 0; }
+  .node .dot {
+    width: 44px; height: 44px; margin: 0 auto; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; border: 2px solid #24344a; color: #4d637d; background: #0b1220;
+  }
+  .node .lbl { font-size: 10px; color: #5d7690; margin-top: 4px; }
+  .node.done .dot { border-color: #ff9d4d; color: #1a0d02; background: #ff9d4d; box-shadow: 0 0 12px rgba(255,157,77,0.5); }
+  .node.done .lbl { color: #ffcf9e; }
+  .node.now .dot { border-color: #a07bff; color: #d9c8ff; background: rgba(160,123,255,0.15); animation: pulse 1.6s infinite; }
+  .node.now .lbl { color: #c9b4ff; font-weight: 800; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(160,123,255,0.55); } 55% { box-shadow: 0 0 0 10px rgba(160,123,255,0); } }
+  .node.lock { opacity: 0.35; cursor: default; }
+  .chap2 {
+    margin-top: 18px; padding: 13px 14px; border-radius: 13px;
+    border: 1px dashed #24344a; color: #7b90a6; font-size: 13px; line-height: 1.7;
+  }
+  .streak { margin-top: 16px; text-align: center; font-size: 12.5px; color: #ffb45d; }
+  .installhint { margin-top: 20px; text-align: center; font-size: 10.5px; color: #3d5169; }
+  .verline { margin-top: 6px; text-align: center; font-size: 10px; color: #2c3d52; }
+
+  .lesson-top { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; font-size: 15px; font-weight: 800; color: #eaf6ff; }
+  .backbtn {
+    border: 1.5px solid #24344a; background: #0b1220; color: #ffcf9e; font: inherit; font-size: 16px;
+    width: 38px; height: 38px; border-radius: 11px; cursor: pointer; flex: none;
+  }
+  .tag {
+    background: rgba(255,157,77,0.14); border: 1px solid rgba(255,157,77,0.5);
+    color: #ffcf9e; padding: 3px 9px; border-radius: 7px; font-size: 12px; white-space: nowrap;
+  }
+
+  .mission-card {
+    border: 1.5px solid rgba(255,157,77,0.7); border-radius: 16px; padding: 18px 16px;
+    background: linear-gradient(160deg, rgba(255,157,77,0.10), rgba(7,10,16,0.2));
+    box-shadow: 0 0 22px rgba(255,157,77,0.15);
+  }
+  .mno { font-size: 12px; color: #ffb45d; font-weight: 800; letter-spacing: 2px; }
+  .mq { font-size: 20px; font-weight: 900; color: #fff2e3; line-height: 1.65; margin-top: 9px; }
+  .mhint { margin-top: 12px; font-size: 13.5px; color: #c39d72; }
+
+  .stage3d {
+    position: relative; border-radius: 15px; overflow: hidden;
+    border: 1px solid #182436; background: #14171d; height: 46vh; max-height: 340px; min-height: 250px;
+  }
+  .stage3d canvas { display: block; touch-action: none; cursor: grab; }
+  .stage3d::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 75% 70% at 50% 45%, transparent 55%, rgba(0,0,0,0.38) 100%);
+  }
+  .chip {
+    position: absolute; z-index: 4; pointer-events: none;
+    padding: 4px 10px; border-radius: 7px; font-size: 11.5px; font-weight: 800;
+    color: #eef4fa; background: rgba(10,12,16,0.82); border: 1.5px solid rgba(210,225,240,0.75);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  .chip.red { color: #ffd9d0; border-color: rgba(255,93,77,0.9); background: rgba(80,16,8,0.85); }
+  .hint3d {
+    position: absolute; top: 9px; right: 9px; z-index: 4; font-size: 10.5px; color: #cfe0f0;
+    background: rgba(10,12,16,0.72); padding: 4px 10px; border-radius: 999px;
+    border: 1px solid rgba(200,220,240,0.25); pointer-events: none;
+  }
+  .guessline { font-size: 13px; color: #ff9d94; margin-bottom: 8px; font-weight: 700; }
+  .boom {
+    position: absolute; inset: 0; z-index: 5; display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px; background: rgba(120,20,10,0.18); pointer-events: none;
+  }
+  .boom.show { display: flex; }
+  .boom .b1 { font-size: 30px; font-weight: 900; color: #ffe2da; text-shadow: 0 0 22px rgba(255,60,40,0.95); transform: rotate(-8deg); }
+  .boom .b2 { font-size: 13px; font-weight: 800; color: #cfe0f0; text-shadow: 0 1px 6px #000; }
+  .flash { position: absolute; inset: 0; z-index: 6; background: #fff; opacity: 0; pointer-events: none; }
+  .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px 12px; margin-top: 10px; font-size: 12.5px; color: #bccddf; }
+  .sliderrow { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 14.5px; color: #d0e0f0; }
+  .sliderrow input[type=range] { flex: 1; accent-color: #ff9d4d; min-width: 0; height: 32px; }
+  .sliderrow .val { min-width: 66px; text-align: right; font-weight: 800; color: #ffcf9e; font-size: 16px; }
+  .extra { margin-top: 10px; }
+  .readout { margin-top: 9px; text-align: center; font-size: 14px; color: #ffb45d; font-weight: 700; }
+  .trynote { margin-top: 10px; text-align: center; font-size: 13px; color: #93a8bd; line-height: 1.65; }
+
+  .result-banner {
+    border: 1.5px solid rgba(62,240,160,0.6); border-radius: 14px; padding: 13px;
+    background: rgba(62,240,160,0.07); text-align: center;
+    font-size: 15.5px; font-weight: 900; color: #d9ffee;
+  }
+  .result-banner small { display: block; font-weight: 600; font-size: 11.5px; color: #8fd8b4; margin-top: 4px; }
+  .minicard {
+    border: 1px solid #1d2c42; border-radius: 15px; padding: 24px 18px; margin-top: 14px;
+    background: linear-gradient(165deg, #0d1524, #0a0f1a);
+    font-size: 19.5px; color: #e2edf8; line-height: 1.85; min-height: 160px;
+    display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 600;
+  }
+  .minicard b { color: #ffcf9e; }
+  .minicard em { font-style: normal; color: #ff8f85; }
+  .dots { text-align: center; margin-top: 12px; letter-spacing: 6px; color: #24344a; font-size: 13px; }
+  .dots span { color: #ff9d4d; }
+
+  .qhead { font-size: 13px; font-weight: 800; color: #b491ff; letter-spacing: 1px; margin-bottom: 8px; }
+  .q { font-size: 18px; font-weight: 800; color: #eaf6ff; line-height: 1.7; }
+  .expl {
+    margin-top: 13px; padding: 13px 14px; border-left: 3px solid #3ef0a0; border-radius: 7px;
+    background: rgba(62,240,160,0.06); font-size: 14.5px; color: #c6e4d5; line-height: 1.75;
+  }
+
+  .center { text-align: center; }
+  .stamp {
+    display: inline-block; margin-top: 34px; padding: 25px 22px; border: 3.5px solid #ff9d4d; border-radius: 50%;
+    color: #ffb45d; font-weight: 900; font-size: 21px; transform: rotate(-11deg);
+    text-shadow: 0 0 14px rgba(255,157,77,0.8);
+    box-shadow: 0 0 26px rgba(255,157,77,0.35), inset 0 0 16px rgba(255,157,77,0.15);
+    animation: stampin 0.45s cubic-bezier(0.2, 2.2, 0.4, 1);
+  }
+  @keyframes stampin { 0% { transform: rotate(-11deg) scale(2.2); opacity: 0; } 100% { transform: rotate(-11deg) scale(1); opacity: 1; } }
+  .stamp small { display: block; font-size: 11px; font-weight: 700; }
+  .clearmsg { margin-top: 18px; font-size: 15px; color: #b3c5d8; line-height: 1.85; }
+  .bossscore { margin-top: 30px; font-size: 42px; font-weight: 900; color: #fff3e6; text-shadow: 0 0 18px rgba(255,157,77,0.7); }
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div id="app">
+
+  <!-- ============ ホーム ============ -->
+  <section id="viewHome" style="display:block">
+    <div class="home-logo">BEND FORGE</div>
+    <div class="home-sub">板金×設計 ── 朝15分・触って曲げて覚える道場</div>
+    <button class="resume" id="btnResume"></button>
+    <div class="goalbanner">🎯 ゴール：現場に信頼される板金図面が描ける設計者</div>
+    <div class="invmeter">
+      <svg width="64" height="84" viewBox="0 0 64 84">
+        <defs>
+          <linearGradient id="chg" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#4fd1ff"/><stop offset="1" stop-color="#ff9d4d"/>
+          </linearGradient>
+          <clipPath id="fillclip"><rect id="fillRect" x="0" y="84" width="64" height="0"/></clipPath>
+          <g id="robo">
+            <rect x="18" y="6" width="28" height="22" rx="6"/>
+            <circle cx="27" cy="17" r="3.5"/><circle cx="37" cy="17" r="3.5"/>
+            <line x1="32" y1="6" x2="32" y2="0" stroke-width="3"/>
+            <circle cx="32" cy="0" r="2.5"/>
+            <rect x="14" y="32" width="36" height="30" rx="7"/>
+            <rect x="4" y="34" width="8" height="20" rx="4"/>
+            <rect x="52" y="34" width="8" height="20" rx="4"/>
+            <rect x="18" y="66" width="10" height="16" rx="4"/>
+            <rect x="36" y="66" width="10" height="16" rx="4"/>
+            <path d="M30 38 L36 46 h-5 l3 8 -8 -10 h5 z"/>
+          </g>
+        </defs>
+        <use href="#robo" fill="#1c2836" stroke="#2a3c56" stroke-width="1"/>
+        <g clip-path="url(#fillclip)"><use href="#robo" fill="url(#chg)"/></g>
+      </svg>
+      <div class="txt">
+        <b id="invTitle">発明チャージ 0%</b><br>
+        <span id="invLine">学ぶほどロボットの板金ボディが完成に近づく</span>
+        <div class="bar"><div id="invBar"></div></div>
+      </div>
+    </div>
+    <div class="prog-row"><span id="progText"></span><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><span>クリア</span></div>
+    <div class="chap-title">第1章 板金を見る <span>（板金のきそ・全6回＋ボス）</span></div>
+    <div class="nodes" id="nodes1"></div>
+    <div class="chap2">🔒 第2章 図面と現場へ（曲げ順序・公差・溶接組立）<br>第1章クリアで解放（次のアップデートで配信）</div>
+    <div class="streak" id="streakLine"></div>
+    <div class="installhint">スマホ：ブラウザの共有メニュー →「ホーム画面に追加」でアプリになる</div>
+    <div class="verline">BEND FORGE v1.0 ─ 第1章（ARC/FORCE/VOLTの兄弟）</div>
+  </section>
+
+  <!-- ============ レッスン ============ -->
+  <section id="viewLesson" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBack">←</button>
+      <span class="tag" id="lsTag"></span><span id="lsTitle"></span>
+    </div>
+
+    <div id="stageWrap">
+      <div class="stage3d" id="stage3d">
+        <div id="stageChips"></div>
+        <div class="hint3d" id="hint3d">👆 タップ＝操作／ドラッグ＝回転</div>
+        <div class="flash" id="flash"></div>
+        <div class="boom" id="boom"><span class="b1" id="boomText">バキッ!!</span><span class="b2">🔧 画面タップでやり直し</span></div>
+      </div>
+    </div>
+
+    <div id="phMission" style="display:none">
+      <div class="mission-card">
+        <div class="mno" id="msNo"></div>
+        <div class="mq" id="msQ"></div>
+      </div>
+      <div id="msOpts"></div>
+      <div class="mhint">↑ 予想してタップ（外れてもOK。実験で確かめる）</div>
+    </div>
+
+    <div id="phExp" style="display:none">
+      <div class="guessline" id="guessLine"></div>
+      <div class="legend" id="expLegend"></div>
+      <div class="sliderrow"><span id="sliderLabel"></span><input type="range" id="loadRange" min="0" max="100" value="0"><span class="val" id="loadVal">0</span></div>
+      <div class="extra" id="extraCtrls"></div>
+      <div class="trynote" id="expNote"></div>
+      <button class="cta alt" id="btnMicro">🔬 ミクロの目（原子で見る）</button>
+      <button class="cta" id="btnToReveal" disabled>答え合わせ →</button>
+    </div>
+
+    <div id="phReveal" style="display:none">
+      <div class="result-banner" id="rvBanner"></div>
+      <div class="minicard" id="rvCard"></div>
+      <div class="dots" id="rvDots"></div>
+      <button class="cta" id="btnCardNext">つぎ →</button>
+    </div>
+
+    <div id="phQuiz" style="display:none">
+      <div class="qhead">ミニクイズ ── 1問だけ</div>
+      <div class="q" id="qzQ"></div>
+      <div id="qzOpts"></div>
+      <div class="expl" id="qzExp" style="display:none"></div>
+      <button class="cta" id="btnQuizDone" style="display:none">クリア！ →</button>
+    </div>
+
+    <div id="phClear" class="center" style="display:none">
+      <div class="stamp" id="clearStamp"></div>
+      <div class="teaser" id="teaserBox"></div>
+      <div class="clearmsg" id="clearMsg"></div>
+      <button class="cta" id="btnGoHome">マップへもどる</button>
+    </div>
+  </section>
+
+  <!-- ============ ボス戦 ============ -->
+  <section id="viewBoss" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBackB">←</button>
+      <span class="tag">L7</span><span>章ボス戦 ── 7問</span>
+    </div>
+    <div id="bossPlay">
+      <div class="qhead" id="bsProgress"></div>
+      <div class="q" id="bsQ"></div>
+      <div id="bsOpts"></div>
+      <div class="expl" id="bsExp" style="display:none"></div>
+      <button class="cta" id="btnBossNext" style="display:none">つぎ →</button>
+    </div>
+    <div id="bossResult" class="center" style="display:none">
+      <div class="bossscore" id="bsScore"></div>
+      <div class="clearmsg" id="bsMsg"></div>
+      <button class="cta" id="btnBossHome">マップへもどる</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+<script>
+"use strict";
+
+/* ================================================================
+   BEND FORGE v1.0 ── 第1章「板金を見る」
+   FORGE家族4作目。合体型＋リアル工場＋専用カード3D×18
+================================================================ */
+
+/* ===== 背景：展開図の罫書き＋レーザー光 ===== */
+(function bgFX() {
+  const cv = document.getElementById("bgfx");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  let W = 0, H = 0, pats = [];
+  function build() {
+    W = cv.width = Math.floor(innerWidth * Math.min(1.5, devicePixelRatio || 1));
+    H = cv.height = Math.floor(innerHeight * Math.min(1.5, devicePixelRatio || 1));
+    pats = [];
+    const n = Math.max(3, Math.floor(H / 340));
+    for (let i = 0; i < n; i++) {
+      const w = 130 + Math.random() * 150, h = 90 + Math.random() * 110;
+      const x = Math.random() * Math.max(10, W - w), y = (i + 0.15) * (H / n);
+      const pts = [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
+      let len = 0;
+      const segs = [];
+      for (let k = 1; k < pts.length; k++) {
+        const dx = pts[k][0] - pts[k - 1][0], dy = pts[k][1] - pts[k - 1][1];
+        const l = Math.hypot(dx, dy);
+        segs.push({ x1: pts[k - 1][0], y1: pts[k - 1][1], dx, dy, l, acc: len });
+        len += l;
+      }
+      pats.push({
+        pts, segs, len,
+        bends: [x + w * (0.3 + Math.random() * 0.15), x + w * (0.65 + Math.random() * 0.15)],
+        y, h,
+        laser: { t: Math.random(), sp: 0.05 + Math.random() * 0.05 },
+        sparks: []
+      });
+    }
+  }
+  build();
+  window.addEventListener("resize", build);
+  function pointAt(p, d) {
+    for (let i = 0; i < p.segs.length; i++) {
+      const s = p.segs[i];
+      if (d <= s.acc + s.l) {
+        const f = (d - s.acc) / s.l;
+        return [s.x1 + s.dx * f, s.y1 + s.dy * f];
+      }
+    }
+    const s = p.segs[p.segs.length - 1];
+    return [s.x1 + s.dx, s.y1 + s.dy];
+  }
+  let last = performance.now();
+  (function draw(now) {
+    requestAnimationFrame(draw);
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pats) {
+      ctx.strokeStyle = "rgba(140,180,210,0.13)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(p.pts[0][0], p.pts[0][1]);
+      for (let k = 1; k < p.pts.length; k++) ctx.lineTo(p.pts[k][0], p.pts[k][1]);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255,157,77,0.16)";
+      ctx.setLineDash([10, 5, 2, 5]);
+      for (const bx of p.bends) {
+        ctx.beginPath();
+        ctx.moveTo(bx, p.y);
+        ctx.lineTo(bx, p.y + p.h);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      p.laser.t += dt * p.laser.sp;
+      if (p.laser.t > 1) p.laser.t = 0;
+      const xy = pointAt(p, p.laser.t * p.len);
+      const g = ctx.createRadialGradient(xy[0], xy[1], 0, xy[0], xy[1], 22);
+      g.addColorStop(0, "rgba(255,200,120,0.8)");
+      g.addColorStop(1, "rgba(255,140,60,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(xy[0], xy[1], 22, 0, 6.29); ctx.fill();
+      ctx.fillStyle = "rgba(255,250,235,0.95)";
+      ctx.beginPath(); ctx.arc(xy[0], xy[1], 2.4, 0, 6.29); ctx.fill();
+      if (Math.random() < 0.5) p.sparks.push({ x: xy[0], y: xy[1], vx: (Math.random() - 0.5) * 90, vy: -Math.random() * 70, life: 0.5 });
+      for (let i = p.sparks.length - 1; i >= 0; i--) {
+        const s = p.sparks[i];
+        s.life -= dt;
+        if (s.life <= 0) { p.sparks.splice(i, 1); continue; }
+        s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 220 * dt;
+        ctx.fillStyle = "rgba(255,190,110," + (s.life * 1.6) + ")";
+        ctx.fillRect(s.x, s.y, 2, 2);
+      }
+    }
+  })(last);
+})();
+
+// ---------------- レッスンデータ ----------------
+const LESSONS = [
+  {
+    id: "l1", tag: "L1", label: "板金", title: "板金ってなに？",
+    mission: {
+      no: "MISSION 01 ── 金属の箱のヒミツ",
+      q: "金属のカバーや箱、<br>板金ではどう作る？",
+      opts: ["かたまりから削り出す", "1枚の板を切って曲げる", "型に溶かして流しこむ"], ans: 1,
+      ansLine: "1枚の板を切って曲げる（速い・安い・軽い）"
+    },
+    sliderLabel: "工程", val: (v) => Math.round(v) + "%", grabAxis: "x", springBack: false,
+    note: "スライダーで工程を進めろ：<b>レーザー切断→曲げ1→曲げ2</b>。<br>1枚の板がブラケットになる。",
+    legend: ['<span style="color:#ffb45d">✂ 切る（レーザー）</span>', '<span style="color:#7fe0ff">⤴ 曲げる（プレス）</span>'],
+    cards: [
+      "板金（ばんきん）＝<br><b>1枚の板</b>から作る。<br>切る → 曲げる → つなぐ。",
+      "切るのは<b>レーザー</b>や<br>タレパン（型で打ち抜く機械）。<br>ミリ以下の精度で切れる。",
+      "曲げれば<em>箱にもカバーにも</em>。<br>削り出しより<b>速い・安い・軽い</b>。<br>機械の外装はほぼ板金。"
+    ],
+    quiz: {
+      q: "板金の作り方の順番は？",
+      opts: ["曲げる→切る", "切る→曲げる", "溶かす→固める"], ans: 1,
+      exp: "平らなうちに切って（展開状態）、あとから曲げて立体にする。この順番が板金の心臓。"
+    },
+    teaser: "機械のカバー・ブラケットが<b>「どう作られたか」見える目</b>になる"
+  },
+  {
+    id: "l2", tag: "L2", label: "曲げ", title: "曲げ＝挟んで押す",
+    mission: {
+      no: "MISSION 02 ── プレスブレーキ",
+      q: "板はどうやって<br>90°に曲げる？",
+      opts: ["手で えいっと押す", "V型とパンチで挟んで押す", "バーナーで熱して曲げる"], ans: 1,
+      ansLine: "V溝の台（ダイ）とパンチで挟んで押す＝プレスブレーキ"
+    },
+    sliderLabel: "ストローク", val: (v) => Math.round(v * 0.95) + "°", grabAxis: "x", springBack: false,
+    note: "スライダー＝パンチを降ろす。<br>押した深さで角度が決まる。V溝の上で板が折れていく。",
+    legend: ['<span style="color:#bccddf">▼ パンチ（上の刃）</span>', '<span style="color:#ffb45d">▽ ダイ（V溝の台）</span>'],
+    cards: [
+      "曲げ＝<b>挟んで押す</b>。<br>機械の名は<br><b>プレスブレーキ</b>。",
+      "押した<em>深さ</em>で<br>角度が決まる。<br>浅い＝ゆるい、深い＝90°。",
+      "内側のR（丸み）は<br><b>板厚以上</b>が基本。<br>鋭く曲げすぎると<em>割れる</em>。"
+    ],
+    quiz: {
+      q: "曲げ内側のR（丸み）の基本は？",
+      opts: ["ゼロ（ピン角）がいい", "板厚以上", "大きいほどいい"], ans: 1,
+      exp: "内R＜板厚だと外側がのびきれず割れやすい。図面のR指示は加工の都合と強度の両方。"
+    },
+    teaser: "図面の<b>R・角度指示に根拠</b>が持てる（現場と話が通じる）"
+  },
+  {
+    id: "l3", tag: "L3", label: "展開", title: "のび＝展開のヒミツ",
+    mission: {
+      no: "MISSION 03 ── 曲げた板を平らに戻すと…",
+      q: "曲げた板を平らにのばした。<br>曲げる前の板とくらべると？",
+      opts: ["同じ長さ", "少し長い", "少し短い"], ans: 1,
+      ansLine: "少し長い（曲げで外側がのびた分だけ）"
+    },
+    sliderLabel: "ひらく", val: (v) => Math.round(90 - v * 0.9) + "°", grabAxis: "x", springBack: false,
+    note: "スライダーで曲げをひらいて<b>展開図</b>に戻せ。<br>赤＝のびた外側／青＝ちぢんだ内側。",
+    legend: ['<span style="color:#ff7a6e">■ 外側＝のびる</span>', '<span style="color:#6db4ff">■ 内側＝ちぢむ</span>', '<span style="color:#cfd8e3">─ まん中＝中立軸</span>'],
+    cards: [
+      "曲げの外側は<em>のび</em>、<br>内側は<em>ちぢむ</em>。<br>（FORCE FORGEの曲げと同じ！）",
+      "のびる分があるから、<br>展開寸法は<b>単純な足し算より短い</b>。<br>これが「のび値」。",
+      "まん中の層はのびない<br>＝<b>中立軸</b>。<br>展開はこの層の長さで測る。"
+    ],
+    quiz: {
+      q: "展開寸法（平らに開いた寸法）は、辺の単純な足し算とくらべて？",
+      opts: ["長くなる", "短くなる", "同じ"], ans: 1,
+      exp: "外側がのびてくれる分、材料は短くて済む。のび値を引くのが展開計算。"
+    },
+    teaser: "展開が読める→<b>ムダのない板取りと正確な展開図</b>"
+  },
+  {
+    id: "l4", tag: "L4", label: "戻り", title: "スプリングバック",
+    mission: {
+      no: "MISSION 04 ── 90°に押して離すと…",
+      q: "パンチで90°まで曲げて<br>離した。角度は？",
+      opts: ["90°のまま", "少し開く（戻る）", "もっと閉じる"], ans: 1,
+      ansLine: "少し開く＝スプリングバック（金属のバネ成分）"
+    },
+    sliderLabel: "押し込み", val: (v) => Math.round(v * 0.95) + "°", grabAxis: "x", springBack: false,
+    note: "スライダーで押し込み→<b>👆タップで離す</b>。<br>狙いは90°。何度まで押せばピッタリ？（戻りは約4°）",
+    legend: ['<span style="color:#3ef0a0">緑ワク＝狙い90°</span>', '<span style="color:#7fe0ff">👆タップ＝離す</span>'],
+    cards: [
+      "金属は<b>バネ成分</b>を持つ。<br>離すと少し戻る<br>＝<em>スプリングバック</em>。",
+      "戻り量は材料しだい。<br>SUS（ステンレス）は大きい、<br>やわらかい材料は小さい。",
+      "対策＝<b>少し深く押す</b><br>（オーバーベンド）。<br>戻りを見込んで狙いを外す。"
+    ],
+    quiz: {
+      q: "90°ピッタリに曲げたい。パンチはどうする？",
+      opts: ["90°ちょうどで止める", "少し深く押す（92〜94°）", "2回に分けて押す"], ans: 1,
+      exp: "戻る分を見込んで深めに押す＝オーバーベンド。戻り量は材料と板厚で変わる。"
+    },
+    teaser: "<b>1発で角度が出る</b>曲げ指示ができる（試作の手戻り減）"
+  },
+  {
+    id: "l5", tag: "L5", label: "穴", title: "曲げ近くの穴はゆがむ",
+    mission: {
+      no: "MISSION 05 ── 曲げ線のそばの丸穴",
+      q: "曲げ線のすぐ近くの丸穴。<br>曲げたらどうなる？",
+      opts: ["丸のまま", "楕円（だえん）にゆがむ"], ans: 1,
+      ansLine: "楕円にゆがむ（曲げで材料が引っ張られるから）"
+    },
+    sliderLabel: "曲げ", val: (v) => Math.round(v * 0.9) + "°", grabAxis: "x", springBack: false,
+    note: "3つの穴：曲げ線に<b>近い・中間・遠い</b>。<br>曲げるほど近い穴が…",
+    legend: ['<span style="color:#ff7a6e">✕ 近い穴＝ゆがむ</span>', '<span style="color:#3ef0a0">○ 遠い穴＝無事</span>'],
+    cards: [
+      "曲げ線のまわりは<br>材料が<em>引っ張られて動く</em>。",
+      "近い穴は<b>楕円にゆがむ</b>。<br>ネジ穴なら致命傷。<br>位置決め穴ならズレる。",
+      "ルール：穴は曲げ線から<br><b>板厚×3</b>はなす。<br>無理なら曲げ後に穴あけ。"
+    ],
+    quiz: {
+      q: "穴は曲げ線からどれだけ離すのが目安？",
+      opts: ["板厚×1", "板厚×3", "離さなくていい"], ans: 1,
+      exp: "だいたい板厚の3倍（最低でも2倍＋R分）。図面チェックの定番ポイント。"
+    },
+    teaser: "<b>現場に怒られない穴位置</b>が最初から描ける"
+  },
+  {
+    id: "l6", tag: "L6", label: "バーリング", title: "薄板にネジ山を稼ぐ",
+    mission: {
+      no: "MISSION 06 ── 1.0mmの薄板にM3タップ",
+      q: "1.0mmの薄板に<br>直接M3のネジ山を切ったら？",
+      opts: ["ガッチリ効く", "山が足りず抜けやすい"], ans: 1,
+      ansLine: "山が2枚くらいしか掛からず抜けやすい→バーリングの出番"
+    },
+    sliderLabel: "工程", val: (v) => Math.round(v) + "%", grabAxis: "x", springBack: false,
+    note: "工程を進めろ：<b>下穴→バーリング（襟を立てる）→タップ</b>。<br>薄板が「ネジの効く板」に化ける。",
+    legend: ['<span style="color:#ffb45d">⌒ 襟（えり）＝バーリング</span>', '<span style="color:#7fe0ff">〜 ネジ山（タップ）</span>'],
+    cards: [
+      "薄板に直接タップ＝<br>山が<b>2枚くらい</b>。<br><em>すぐ抜ける</em>。",
+      "バーリング＝穴のふちに<br><b>襟（えり）を立てて</b><br>肉（山の枚数）を稼ぐ。",
+      "山<b>3枚以上</b>でガッチリ。<br>1.0tでもM3が効く。<br>軽くて強い板金設計の定番。"
+    ],
+    quiz: {
+      q: "バーリングの目的は？",
+      opts: ["見た目をよくする", "ネジ山の肉（枚数）を稼ぐ", "板を軽くする"], ans: 1,
+      exp: "穴のふちを筒状に立ち上げて、タップの掛かる長さを増やす。薄板設計の必殺技。"
+    },
+    teaser: "<b>薄くて軽くて強い</b>ネジ止め設計ができる"
+  }
+];
+
+const BOSS = [
+  { q: "板金の作り方は？", opts: ["かたまりから削る", "1枚の板を切って曲げる", "溶かして型に流す"], ans: 1,
+    exp: "切る→曲げる→つなぐ。速い・安い・軽い。" },
+  { q: "板を曲げる機械は？", opts: ["プレスブレーキ（V型とパンチ）", "旋盤", "ボール盤"], ans: 0,
+    exp: "V溝の台（ダイ）とパンチで挟んで押す。" },
+  { q: "曲げの外側はどうなる？", opts: ["ちぢむ", "のびる", "変わらない"], ans: 1,
+    exp: "外のび・内ちぢみ・まん中は中立軸。" },
+  { q: "曲げ内側のRの基本は？", opts: ["ゼロがいい", "板厚以上", "指定不要"], ans: 1,
+    exp: "内R＜板厚は割れのもと。" },
+  { q: "押して離すと少し戻る現象は？", opts: ["スプリングバック", "バーリング", "ヒートショック"], ans: 0,
+    exp: "金属のバネ成分。深めに押して対策（オーバーベンド）。" },
+  { q: "穴は曲げ線からどれだけ離す？", opts: ["板厚×1", "板厚×3", "くっつけてOK"], ans: 1,
+    exp: "近いと楕円にゆがむ。板厚×3が目安。" },
+  { q: "薄板にネジ山を稼ぐ技は？", opts: ["バーリング", "スプリングバック", "レーザー"], ans: 0,
+    exp: "穴のふちに襟を立てて山3枚以上を確保。" }
+];
+
+// ---------------- 進捗（localStorage） ----------------
+const STORE_KEY = "bend-forge-v1";
+let progress = { done: {}, streak: { week: "", n: 0 }, broken: 0 };
+try {
+  const raw = localStorage.getItem(STORE_KEY);
+  if (raw) progress = Object.assign(progress, JSON.parse(raw));
+} catch (e) {}
+function saveProgress() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) {}
+}
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = (t.getUTCDay() + 6) % 7;
+  t.setUTCDate(t.getUTCDate() - day + 3);
+  const firstThu = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+  const fday = (firstThu.getUTCDay() + 6) % 7;
+  firstThu.setUTCDate(firstThu.getUTCDate() - fday + 3);
+  return t.getUTCFullYear() + "-W" + String(1 + Math.round((t - firstThu) / 6048e5)).padStart(2, "0");
+}
+function nextWeekOf(wkStr) {
+  const m = wkStr.match(/(\d+)-W(\d+)/);
+  if (!m) return "";
+  const d = new Date(Date.UTC(+m[1], 0, 4));
+  d.setUTCDate(d.getUTCDate() + (+m[2]) * 7);
+  return isoWeek(d);
+}
+function bumpStreak() {
+  const wk = isoWeek(new Date());
+  const s = progress.streak;
+  if (s.week === wk) return;
+  s.n = (s.week && nextWeekOf(s.week) === wk) ? s.n + 1 : 1;
+  s.week = wk;
+}
+
+// ---------------- 画面切りかえ ----------------
+const $ = (id) => document.getElementById(id);
+function showView(name) {
+  ["viewHome", "viewLesson", "viewBoss"].forEach((v) => { $(v).style.display = v === name ? "block" : "none"; });
+  window.scrollTo(0, 0);
+}
+function setPhase(name) {
+  ["phMission", "phExp", "phReveal", "phQuiz", "phClear"].forEach((p) => { $(p).style.display = p === name ? "block" : "none"; });
+  const sw = $("stageWrap");
+  if (name === "phExp") { sw.style.display = "block"; sw.classList.remove("mini"); }
+  else if (name === "phReveal") { sw.style.display = "block"; sw.classList.add("mini"); }
+  else sw.style.display = "none";
+  if (ST && !ST.fake) requestAnimationFrame(() => ST.resize());
+  window.scrollTo(0, 0);
+}
+function vib(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+
+// ---------------- ホーム描画 ----------------
+function lessonState(i) {
+  const isBoss = i >= LESSONS.length;
+  const id = isBoss ? "l7" : LESSONS[i].id;
+  if (progress.done[id]) return "done";
+  if (!isBoss && LESSONS[i].alwaysOpen) return "now";
+  const prevDone = i === 0 ? true : (!isBoss ? !!progress.done[LESSONS[i - 1].id] : LESSONS.every((L) => progress.done[L.id]));
+  return prevDone ? "now" : "lock";
+}
+const PROG_KEYS = LESSONS.map((L) => L.id).concat(["l7"]);
+function renderHome() {
+  const wrap = $("nodes1");
+  wrap.innerHTML = "";
+  const labels = LESSONS.map((L) => L.label).concat(["ボス"]);
+  for (let i = 0; i < labels.length; i++) {
+    const st = lessonState(i);
+    const b = document.createElement("button");
+    b.className = "node " + st;
+    const face = i < LESSONS.length ? LESSONS[i].tag.replace("L", "") : "★";
+    b.innerHTML = '<div class="dot">' + (st === "done" ? "✓" : face) + '</div><div class="lbl">' + labels[i] + "</div>";
+    if (st !== "lock") b.addEventListener("click", () => (i < LESSONS.length ? openLesson(i) : openBoss()));
+    wrap.appendChild(b);
+  }
+  const count = PROG_KEYS.filter((k) => progress.done[k]).length;
+  $("progText").textContent = count + "/" + PROG_KEYS.length;
+  $("progFill").style.width = Math.round((count / PROG_KEYS.length) * 100) + "%";
+  const pct = Math.round((count / PROG_KEYS.length) * 100);
+  const fr = $("fillRect");
+  if (fr) { fr.setAttribute("y", 84 - 84 * count / PROG_KEYS.length); fr.setAttribute("height", 84 * count / PROG_KEYS.length); }
+  $("invBar").style.width = pct + "%";
+  $("invTitle").textContent = pct >= 100 ? "⚡ 発明準備完了!!" : "発明チャージ " + pct + "%";
+  $("invLine").textContent = pct >= 100 ? "第2章で図面と現場へ進もう" : pct >= 50 ? "半分きた。板金の目ができてきてる" : "学ぶほどロボットの板金ボディが完成に近づく";
+  const next = LESSONS.map((_, i) => i).find((i) => lessonState(i) === "now");
+  const btn = $("btnResume");
+  if (count === PROG_KEYS.length) {
+    btn.innerHTML = "🏆 第1章 全クリ！<small>ボス戦にもう一度挑める／第2章は次のアップデート</small>";
+    btn.onclick = openBoss;
+  } else if (next === undefined) {
+    btn.innerHTML = "▶ ボス戦へ<small>L7 章ボス戦（7問）</small>";
+    btn.onclick = openBoss;
+  } else {
+    const L = LESSONS[next];
+    btn.innerHTML = (count === 0 ? "▶ はじめる" : "▶ つづきから") + "<small>" + L.tag + " " + L.title + "</small>";
+    btn.onclick = () => openLesson(next);
+  }
+  const s = progress.streak;
+  $("streakLine").textContent = (s.n > 0 ? "🔥 " + s.n + "週れんぞく" : "🔥 今週から積み上げ開始") + "／曲げた板 " + (progress.broken || 0) + "枚";
+}
+
+/* ================================================================
+   3Dリアル工場ステージ（FORGE共通エンジン）
+================================================================ */
+const FLOOR_Y = -1.18;
+let ST = null;
+
+function brushedTexOf() {
+  const cv = document.createElement("canvas");
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#9a9a9a"; ctx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 2600; i++) {
+    const y = Math.random() * 512, x = Math.random() * 512;
+    const len = 30 + Math.random() * 220;
+    ctx.strokeStyle = Math.random() < 0.5
+      ? "rgba(255,255,255," + (0.03 + Math.random() * 0.06) + ")"
+      : "rgba(0,0,0," + (0.03 + Math.random() * 0.06) + ")";
+    ctx.lineWidth = 0.5 + Math.random();
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + len, y + (Math.random() - 0.5) * 2); ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+function tableTexOf() {
+  const cv = document.createElement("canvas");
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#767b83"; ctx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 2600; i++) {
+    const g = 100 + Math.random() * 50 | 0;
+    ctx.fillStyle = "rgba(" + g + "," + (g + 2) + "," + (g + 6) + "," + (0.10 + Math.random() * 0.15) + ")";
+    ctx.fillRect(Math.random() * 512, Math.random() * 512, 1 + Math.random() * 3, 1 + Math.random() * 2);
+  }
+  for (let ix = 0; ix < 8; ix++) for (let iy = 0; iy < 8; iy++) {
+    const x = 32 + ix * 64, y = 32 + iy * 64;
+    ctx.fillStyle = "#101317";
+    ctx.beginPath(); ctx.arc(x, y, 13, 0, 6.29); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, 14.5, Math.PI * 0.7, Math.PI * 1.6); ctx.stroke();
+    ctx.strokeStyle = "rgba(0,0,0,0.5)";
+    ctx.beginPath(); ctx.arc(x, y, 14.5, Math.PI * 1.7, Math.PI * 2.55); ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 1.5);
+  return tex;
+}
+
+function ensureStage() {
+  if (ST) { ST.resize(); return; }
+  const host = $("stage3d");
+  if (typeof THREE === "undefined") {
+    host.insertAdjacentHTML("beforeend", '<div style="color:#8fa6bd;font-size:12px;text-align:center;padding-top:100px">3D表示にはネット接続が必要です</div>');
+    ST = { fake: true, resize(){}, clearScene(){}, group: null };
+    return;
+  }
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 3));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  host.insertBefore(renderer.domElement, host.firstChild);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x14171d);
+  scene.fog = new THREE.Fog(0x14171d, 8, 16);
+  const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 60);
+  camera.position.set(0, 0.9, 5.6);
+  camera.lookAt(0, -0.15, 0);
+
+  const texLoader = new THREE.TextureLoader();
+  const steelTex = {};
+  [["col", "assets/steel_col.jpg", true], ["rough", "assets/steel_rough.jpg", false], ["nrm", "assets/steel_nrm.jpg", false]].forEach((it) => {
+    texLoader.load(it[1], (t) => {
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      if (it[2]) t.encoding = THREE.sRGBEncoding;
+      steelTex[it[0]] = t;
+    });
+  });
+
+  (function makeEnv() {
+    const es = new THREE.Scene();
+    const box = new THREE.BoxGeometry(1, 1, 1);
+    function panel(x, y, z, sx, sy, color) {
+      const m = new THREE.Mesh(box, new THREE.MeshBasicMaterial({ color }));
+      m.position.set(x, y, z); m.scale.set(sx, sy, 0.1); m.lookAt(0, 0, 0); es.add(m);
+    }
+    es.add(new THREE.Mesh(new THREE.SphereGeometry(20, 8, 8), new THREE.MeshBasicMaterial({ color: 0x14161a, side: THREE.BackSide })));
+    panel(0, 6, 1, 7, 3.5, 0xffffff);
+    panel(-6, 2, 2, 2, 4, 0x9fb4c8);
+    panel(6, 1.5, -1, 1.5, 4, 0xcdbfa8);
+    panel(0, 0.8, 6, 5, 2.2, 0x6f7a86);
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(es, 0.02).texture;
+  })();
+  try {
+    if (THREE.RGBELoader) {
+      new THREE.RGBELoader().load("assets/env.hdr", (hdr) => {
+        const pm = new THREE.PMREMGenerator(renderer);
+        scene.environment = pm.fromEquirectangular(hdr).texture;
+        hdr.dispose();
+        pm.dispose();
+      });
+    }
+  } catch (e) {}
+
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  scene.add(new THREE.HemisphereLight(0xbfd0e0, 0x2b2620, 0.35));
+  const key = new THREE.DirectionalLight(0xfff4e6, 1.05);
+  key.position.set(3, 5, 2.5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(isMobile ? 1024 : 2048, isMobile ? 1024 : 2048);
+  key.shadow.camera.left = -3.5; key.shadow.camera.right = 3.5;
+  key.shadow.camera.top = 3.5; key.shadow.camera.bottom = -3.5;
+  key.shadow.bias = -0.0004;
+  scene.add(key);
+  const rim = new THREE.PointLight(0x8fb8d8, 0.22, 16); rim.position.set(-3.4, 1.6, -2.6); scene.add(rim);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const floor = new THREE.Mesh(
+    new THREE.BoxGeometry(7, 0.35, 5),
+    new THREE.MeshStandardMaterial({ map: tableTexOf(), metalness: 0.72, roughness: 0.5, envMapIntensity: 1.1 })
+  );
+  floor.material.bumpMap = floor.material.map;
+  floor.material.bumpScale = 0.03;
+  floor.position.y = FLOOR_Y - 0.175;
+  floor.receiveShadow = true;
+  floor.userData.keep = true;
+  group.add(floor);
+
+  const blobCv = document.createElement("canvas");
+  blobCv.width = 256; blobCv.height = 256;
+  (function () {
+    const c2 = blobCv.getContext("2d");
+    const g = c2.createRadialGradient(128, 128, 10, 128, 128, 125);
+    g.addColorStop(0, "rgba(0,0,0,0.55)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    c2.fillStyle = g;
+    c2.fillRect(0, 0, 256, 256);
+  })();
+  const blob = new THREE.Mesh(
+    new THREE.PlaneGeometry(4.4, 2.8),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(blobCv), transparent: true, opacity: 0.5, depthWrite: false })
+  );
+  blob.rotation.x = -Math.PI / 2;
+  blob.position.y = FLOOR_Y + 0.002;
+  blob.userData.keep = true;
+  group.add(blob);
+
+  const brush = brushedTexOf();
+
+  let rotY = -0.5, rotX = 0.12, zT = 5.6, dragging = false, touched = false, px = 0, py = 0;
+  let mode = "orbit", startX = 0, startY = 0, startLoad = 0, downTime = 0, movedPx = 0;
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const el = renderer.domElement;
+
+  function hitProxy(e) {
+    const sc = ST.sceneApi;
+    if (!sc || !sc.proxy) return false;
+    const r = el.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    camera.updateMatrixWorld();
+    group.updateMatrixWorld(true);
+    ray.setFromCamera(ndc, camera);
+    const list = Array.isArray(sc.proxy) ? sc.proxy : [sc.proxy];
+    return ray.intersectObjects(list, false).length > 0;
+  }
+  el.addEventListener("pointerdown", (e) => {
+    touched = true;
+    $("btnToReveal").disabled = false;
+    if (ST.broken) { rebuildScene(); return; }
+    dragging = true; px = e.clientX; py = e.clientY;
+    downTime = performance.now(); movedPx = 0;
+    ST.springing = false;
+    if (hitProxy(e)) {
+      mode = "pull";
+      startX = e.clientX; startY = e.clientY;
+      startLoad = +$("loadRange").value;
+      el.style.cursor = "grabbing";
+    } else mode = "orbit";
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    movedPx += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
+    const sc = ST.sceneApi;
+    if (mode === "pull" && sc) {
+      let dv = 0;
+      if (sc.grabAxis === "x") dv = (e.clientX - startX) / Math.max(1, el.clientWidth) * 170;
+      else if (sc.grabAxis === "y") dv = (e.clientY - startY) / Math.max(1, el.clientHeight) * 220;
+      else dv = (Math.abs(e.clientX - startX) + Math.abs(e.clientY - startY)) / Math.max(1, el.clientWidth) * 150;
+      $("loadRange").value = Math.max(0, Math.min(100, startLoad + dv));
+      onLoadInput();
+    } else {
+      rotY += (e.clientX - px) * 0.011;
+      rotX = Math.max(-0.5, Math.min(0.95, rotX + (e.clientY - py) * 0.008));
+    }
+    px = e.clientX; py = e.clientY;
+  });
+  el.addEventListener("pointerup", () => {
+    if (!dragging) return;
+    dragging = false;
+    el.style.cursor = "grab";
+    const sc = ST.sceneApi;
+    if (mode === "pull" && sc) {
+      if (performance.now() - downTime < 220 && movedPx < 10 && sc.poke) sc.poke();
+      if (!ST.broken && sc.springBack) ST.springing = true;
+      mode = "orbit";
+    }
+  });
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    zT = Math.max(3.0, Math.min(8.5, zT + e.deltaY * 0.004));
+  }, { passive: false });
+
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  ST = {
+    group, camera, brush, steel: steelTex,
+    sceneApi: null, broken: false, springing: false, timeScale: 1, shake: 0,
+    resize,
+    resetView() { rotY = -0.5; rotX = 0.12; zT = 5.6; touched = false; },
+    setView(ry, rx, z) {
+      if (ry !== undefined) rotY = ry;
+      if (rx !== undefined) rotX = rx;
+      if (z !== undefined) zT = z;
+      touched = true;
+    },
+    clearScene() {
+      for (let i = group.children.length - 1; i >= 0; i--) {
+        const c = group.children[i];
+        if (c.userData && c.userData.keep) continue;
+        group.remove(c);
+        c.traverse && c.traverse((o) => {
+          if (o.geometry) o.geometry.dispose();
+          if (o.material && o.material !== null) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { if (m.dispose) m.dispose(); });
+        });
+      }
+      ST.sceneApi = null; ST.broken = false; ST.springing = false; ST.timeScale = 1; ST.shake = 0;
+      $("stageChips").innerHTML = "";
+      setBoom(false, "");
+    },
+    breakFX(label) {
+      ST.broken = true; ST.timeScale = 0.18; ST.shake = 0.06;
+      progress.broken = (progress.broken || 0) + 1;
+      saveProgress();
+      vib([90, 40, 140]);
+      const flash = $("flash");
+      flash.style.transition = "none"; flash.style.opacity = 0.65;
+      requestAnimationFrame(() => { flash.style.transition = "opacity 0.45s"; flash.style.opacity = 0; });
+      setBoom(true, label || "バキッ!!");
+    }
+  };
+
+  let last = performance.now();
+  function loop(now) {
+    requestAnimationFrame(loop);
+    let dt = Math.min(0.05, (now - last) / 1000); last = now;
+    ST.timeScale += (1 - ST.timeScale) * 0.03;
+    dt *= ST.timeScale;
+    if (!touched) rotY += 0.002;
+    group.rotation.y += (rotY - group.rotation.y) * 0.12;
+    group.rotation.x += (rotX - group.rotation.x) * 0.12;
+    camera.position.z += (zT - camera.position.z) * 0.09;
+
+    if (ST.springing && !ST.broken) {
+      const v = +$("loadRange").value;
+      const nv = v * 0.85 - 1.2;
+      if (nv <= 0) { $("loadRange").value = 0; ST.springing = false; } else $("loadRange").value = nv;
+      onLoadInput();
+    }
+    const sc = ST.sceneApi;
+    if (sc && sc.tick) sc.tick(dt, now);
+
+    ST.shake = Math.max(0, ST.shake - dt * 0.14);
+    group.position.x = (Math.random() - 0.5) * ST.shake;
+    group.position.y = (Math.random() - 0.5) * ST.shake;
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(loop);
+}
+
+function setBoom(on, label) {
+  $("boom").className = on ? "boom show" : "boom";
+  if (label) $("boomText").textContent = label;
+}
+
+// ---- 共通部品メーカー ----
+function steelMaps(extra) {
+  const s = ST.steel;
+  const base = (s && s.col)
+    ? { color: 0xd8dde2, metalness: 0.9, roughness: 1.0,
+        map: s.col, roughnessMap: s.rough, normalMap: s.nrm,
+        normalScale: new THREE.Vector2(0.6, 0.6), envMapIntensity: 1.25 }
+    : { color: 0xb8c2cc, metalness: 0.85, roughness: 0.36,
+        roughnessMap: ST.brush, bumpMap: ST.brush, bumpScale: 0.012, envMapIntensity: 1.2 };
+  return Object.assign(base, extra || {});
+}
+function steelMatOf(extra) {
+  return new THREE.MeshStandardMaterial(steelMaps(extra));
+}
+const tmpC2 = { c: null };
+function tc() { if (!tmpC2.c) tmpC2.c = new THREE.Color(); return tmpC2.c; }
+function setExtraHTML(html) { $("extraCtrls").innerHTML = html || ""; }
+function setChips(html) { $("stageChips").innerHTML = html || ""; }
+
+/* ===== 板金の核ヘルパー：曲げられるシート（内Rつき・のび/ちぢみ色） ===== */
+function mkBendSheet(opts) {
+  opts = opts || {};
+  const len = opts.len || 2.4, wid = opts.wid || 1.3, t = opts.t || 0.06;
+  const lineX = opts.lineX === undefined ? 0 : opts.lineX;
+  const zone = opts.zone || 0.28;
+  const segs = opts.segs || 72;
+  const geo = new THREE.BoxGeometry(len, t, wid, segs, 2, 6);
+  const pos = geo.attributes.position;
+  const base = pos.array.slice();
+  const colAttr = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3);
+  geo.setAttribute("color", colAttr);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial(steelMaps({ vertexColors: true })));
+  mesh.castShadow = true;
+  ST.group.add(mesh);
+  function setBend(a, colorOn) {
+    const arr = pos.array, c = colAttr.array;
+    const R = a > 0.001 ? zone / a : 1e6;
+    const ex = lineX + (a > 0.001 ? R * Math.sin(a) : zone);
+    const ey = a > 0.001 ? R * (1 - Math.cos(a)) : 0;
+    for (let i = 0; i < pos.count; i++) {
+      const i3 = i * 3;
+      const x = base[i3], y = base[i3 + 1];
+      let strain = 0;
+      if (x <= lineX || a <= 0.001) {
+        arr[i3] = x; arr[i3 + 1] = y;
+      } else if (x <= lineX + zone) {
+        const th = a * (x - lineX) / zone;
+        arr[i3] = lineX + R * Math.sin(th) - y * Math.sin(th);
+        arr[i3 + 1] = R * (1 - Math.cos(th)) + y * Math.cos(th);
+        strain = colorOn ? (y / (t / 2)) * Math.min(1, a / 1.6) : 0;
+      } else {
+        const s2 = x - lineX - zone;
+        arr[i3] = ex + s2 * Math.cos(a) - y * Math.sin(a);
+        arr[i3 + 1] = ey + s2 * Math.sin(a) + y * Math.cos(a);
+      }
+      let r = 1, g = 1, b = 1;
+      if (strain > 0.05) { r = 1 + 0.5 * strain; g = 1 - 0.72 * strain; b = 1 - 0.8 * strain; }
+      else if (strain < -0.05) { const q = -strain; r = 1 - 0.7 * q; g = 1 - 0.25 * q; b = 1 + 0.5 * q; }
+      c[i3] = r; c[i3 + 1] = g; c[i3 + 2] = b;
+    }
+    pos.needsUpdate = true;
+    colAttr.needsUpdate = true;
+    geo.computeVertexNormals();
+  }
+  setBend(0, false);
+  return { mesh, setBend, geo };
+}
+/* プレスブレーキ（V溝ダイ＋パンチ） */
+function mkPressBrake(scale) {
+  const s = scale || 1;
+  const dieMat = steelMatOf({ color: 0x4a525d });
+  const dieL = new THREE.Mesh(new THREE.BoxGeometry(1.3 * s, 0.5 * s, 1.5 * s), dieMat);
+  dieL.rotation.z = 0.35;
+  dieL.position.set(-0.72 * s, -0.72 * s, 0);
+  dieL.castShadow = true;
+  ST.group.add(dieL);
+  const dieR = new THREE.Mesh(new THREE.BoxGeometry(1.3 * s, 0.5 * s, 1.5 * s), dieMat);
+  dieR.rotation.z = -0.35;
+  dieR.position.set(0.72 * s, -0.72 * s, 0);
+  dieR.castShadow = true;
+  ST.group.add(dieR);
+  const punch = new THREE.Group();
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.22 * s, 1.1 * s, 1.4 * s), steelMatOf({ color: 0x6a7480 }));
+  blade.position.y = 0.72 * s;
+  blade.castShadow = true;
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.16 * s, 0.35 * s, 4), steelMatOf({ color: 0x6a7480 }));
+  tip.rotation.y = Math.PI / 4;
+  tip.rotation.z = Math.PI;
+  tip.scale.z = 4.4;
+  tip.position.y = 0.05 * s;
+  punch.add(blade); punch.add(tip);
+  ST.group.add(punch);
+  return { punch, setStroke(k) { punch.position.y = 0.85 - k * 0.78; } };
+}
+
+/* ================================================================
+   実験シーン（L1〜L6）
+================================================================ */
+
+/* L1：レーザー切断→曲げ→ブラケット誕生 */
+function buildL1() {
+  const mat = () => new THREE.MeshStandardMaterial(steelMaps({}));
+  const center = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.06, 1.1), mat());
+  center.castShadow = true;
+  center.position.y = -0.5;
+  ST.group.add(center);
+  function flange(side) {
+    const g = new THREE.Group();
+    const p = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 1.1), mat());
+    p.position.x = side * 0.4;
+    p.castShadow = true;
+    g.add(p);
+    g.position.set(side * 0.7, -0.5, 0);
+    ST.group.add(g);
+    return g;
+  }
+  const fL = flange(-1), fR = flange(1);
+  const cutPts = [];
+  const W2 = 1.5, D2 = 0.58;
+  [[-W2, -D2], [W2, -D2], [W2, D2], [-W2, D2]].forEach((p, i, a) => {
+    const n = a[(i + 1) % a.length];
+    for (let f = 0; f < 14; f++) cutPts.push([p[0] + (n[0] - p[0]) * f / 14, p[1] + (n[1] - p[1]) * f / 14]);
+  });
+  const laser = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 8),
+    new THREE.MeshStandardMaterial({ color: 0xffe0b0, emissive: 0xffa040, emissiveIntensity: 4 }));
+  laser.visible = false;
+  ST.group.add(laser);
+  const cutLineMat = new THREE.MeshStandardMaterial({ color: 0x331a08, emissive: 0xff7020, emissiveIntensity: 1.2 });
+  const cutSegs = [];
+  for (let i = 0; i < cutPts.length; i++) {
+    const p = cutPts[i], n = cutPts[(i + 1) % cutPts.length];
+    const dx = n[0] - p[0], dz = n[1] - p[1];
+    const l = Math.hypot(dx, dz);
+    const m = new THREE.Mesh(new THREE.BoxGeometry(l, 0.015, 0.02), cutLineMat);
+    m.position.set((p[0] + n[0]) / 2, -0.465, (p[1] + n[1]) / 2);
+    m.rotation.y = -Math.atan2(dz, dx);
+    m.visible = false;
+    ST.group.add(m);
+    cutSegs.push(m);
+  }
+  setChips('<div class="chip" id="csChip" style="left:24%; top:16%">工程0%：まっさらな1枚の板</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.2, 2.0), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.4;
+  ST.group.add(proxy);
+  let load = 0;
+  function apply() {
+    const k = load;
+    const chip = $("csChip");
+    if (k < 0.34) {
+      const f = k / 0.34;
+      const idx = Math.floor(f * cutSegs.length);
+      cutSegs.forEach((m, i) => (m.visible = i < idx));
+      laser.visible = f > 0.01 && f < 0.999;
+      const p = cutPts[Math.min(cutPts.length - 1, idx)];
+      laser.position.set(p[0], -0.45, p[1]);
+      fL.rotation.z = 0; fR.rotation.z = 0;
+      if (chip) chip.textContent = "工程" + Math.round(k * 100) + "%：レーザーで外形を切断中✂";
+    } else if (k < 0.67) {
+      laser.visible = false;
+      cutSegs.forEach((m) => (m.visible = true));
+      const f = (k - 0.34) / 0.33;
+      fL.rotation.z = -f * Math.PI / 2;
+      fR.rotation.z = 0;
+      if (chip) chip.textContent = "工程" + Math.round(k * 100) + "%：曲げ1（左フランジを起こす）";
+    } else {
+      laser.visible = false;
+      cutSegs.forEach((m) => (m.visible = true));
+      fL.rotation.z = -Math.PI / 2;
+      const f = (k - 0.67) / 0.33;
+      fR.rotation.z = f * Math.PI / 2;
+      if (chip) chip.textContent = k > 0.98 ? "完成!! 1枚の板がブラケットになった🎉" : "工程" + Math.round(k * 100) + "%：曲げ2（右フランジ）";
+    }
+  }
+  apply();
+  ST.sceneApi = {
+    proxy, grabAxis: "x", springBack: false,
+    update(l) { load = l; apply(); },
+    poke() { $("loadRange").value = 0; onLoadInput(); vib(10); }
+  };
+}
+
+/* L2：プレスブレーキで曲げる */
+function buildL2() {
+  const pb = mkPressBrake(1);
+  const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+  sheet.mesh.position.y = -0.42;
+  setChips('<div class="chip" style="left:6%; top:22%">パンチ▼</div>' +
+           '<div class="chip" style="right:6%; top:66%">ダイ（V溝）</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.6, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.2;
+  ST.group.add(proxy);
+  setExtraHTML('<div class="readout" id="l2read"></div>');
+  let load = 0;
+  function apply() {
+    const a = load * (95 * Math.PI / 180);
+    sheet.setBend(a, true);
+    pb.setStroke(load);
+    const r = $("l2read");
+    if (r) r.innerHTML = "曲げ角度 <b>" + Math.round(load * 95) + "°</b>（押した深さで決まる）";
+  }
+  apply();
+  ST.sceneApi = { proxy, grabAxis: "x", springBack: false, update(l) { load = l; apply(); } };
+}
+
+/* L3：のびと展開（ひらくと平らに） */
+function buildL3() {
+  const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.09, lineX: 0.1, zone: 0.3 });
+  sheet.mesh.position.y = -0.45;
+  setChips('<div class="chip" style="left:8%; top:18%">スライダーで展開図に戻せ</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.4, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.3;
+  ST.group.add(proxy);
+  setExtraHTML('<div class="readout" id="l3read"></div>');
+  let load = 0;
+  function apply() {
+    const a = (1 - load) * Math.PI / 2;
+    sheet.setBend(a, true);
+    const r = $("l3read");
+    if (r) r.innerHTML = load > 0.95
+      ? "展開完了：<b>のびた外側の分、展開は少し短く取る</b>"
+      : "曲げ " + Math.round(90 - load * 90) + "° ／ 赤＝のびてる外側";
+  }
+  apply();
+  ST.sceneApi = { proxy, grabAxis: "x", springBack: false, update(l) { load = l; apply(); } };
+}
+
+/* L4：スプリングバック（押して離すと戻る） */
+function buildL4() {
+  const pb = mkPressBrake(1);
+  const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+  sheet.mesh.position.y = -0.42;
+  setChips('<div class="chip" style="left:6%; top:18%">狙い＝90°</div>' +
+           '<div class="chip" id="csChip" style="right:6%; top:18%">押して👆タップで離す</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.6, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.2;
+  ST.group.add(proxy);
+  setExtraHTML('<div class="readout" id="l4read"></div>');
+  let load = 0, released = false, sprung = 0;
+  function apply() {
+    const pushDeg = load * 95;
+    let showDeg;
+    if (released) {
+      showDeg = sprung;
+      pb.setStroke(0);
+    } else {
+      showDeg = pushDeg;
+      pb.setStroke(load);
+    }
+    sheet.setBend(showDeg * Math.PI / 180, true);
+    const r = $("l4read");
+    if (r) {
+      if (released) {
+        const diff = Math.round(sprung - 90);
+        r.innerHTML = "離した結果 <b>" + Math.round(sprung) + "°</b>" +
+          (Math.abs(sprung - 90) <= 1 ? " 🎯 90°ピッタリ!!" : diff < 0 ? "（あと" + (-diff) + "°→もっと深く押す）" : "（行きすぎ→少し戻す）");
+        if (Math.abs(sprung - 90) <= 1) vib([30, 30, 60]);
+      } else {
+        r.innerHTML = "押し込み <b>" + Math.round(pushDeg) + "°</b> ／ 👆タップで離す（戻り約4°）";
+      }
+    }
+  }
+  apply();
+  ST.sceneApi = {
+    proxy, grabAxis: "x", springBack: false,
+    update(l) { load = l; released = false; apply(); },
+    poke() {
+      if (released) { released = false; apply(); return; }
+      released = true;
+      sprung = Math.max(0, load * 95 - 4);
+      vib(15);
+      apply();
+      const chip = $("csChip");
+      if (chip) chip.textContent = "スプリングバック発動（−4°）";
+    }
+  };
+}
+
+/* L5：曲げ近くの穴がゆがむ */
+function buildL5() {
+  const lineX = -0.2, zone = 0.3;
+  const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX, zone });
+  sheet.mesh.position.y = -0.4;
+  const rings = [];
+  [[0.16, 0xff5d4d], [0.55, 0xffd64f], [1.0, 0x3ef0a0]].forEach(([dx, col]) => {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.02, 10, 24),
+      new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.5 }));
+    ring.rotation.x = Math.PI / 2;
+    ST.group.add(ring);
+    rings.push({ ring, dx });
+  });
+  setChips('<div class="chip red" style="left:18%; top:20%">近い穴</div>' +
+           '<div class="chip" style="right:8%; top:48%">遠い穴＝無事</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.4, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.3;
+  ST.group.add(proxy);
+  setExtraHTML('<div class="readout" id="l5read"></div>');
+  let load = 0;
+  function apply() {
+    const aa = load * Math.PI / 2;
+    sheet.setBend(aa, true);
+    const R = aa > 0.001 ? zone / aa : 1e6;
+    rings.forEach(({ ring, dx }) => {
+      if (dx <= zone && aa > 0.001) {
+        const th = aa * dx / zone;
+        ring.position.set(lineX + R * Math.sin(th), R * (1 - Math.cos(th)) - 0.4 + 0.04, 0.3);
+        ring.rotation.x = Math.PI / 2 - th;
+      } else {
+        const ex = lineX + (aa > 0.001 ? R * Math.sin(aa) : zone);
+        const ey = aa > 0.001 ? R * (1 - Math.cos(aa)) : 0;
+        const s2 = dx - zone;
+        ring.position.set(ex + s2 * Math.cos(aa), ey + s2 * Math.sin(aa) - 0.4 + 0.04, 0.3);
+        ring.rotation.x = Math.PI / 2 - aa;
+      }
+      const near = Math.max(0, 1 - dx / 0.5);
+      ring.scale.set(1 + near * load * 0.65, 1, 1 - near * load * 0.18);
+    });
+    const r = $("l5read");
+    if (r) r.innerHTML = load > 0.6
+      ? "近い穴が<b>楕円</b>に…ネジ穴なら致命傷 ⚠️"
+      : "曲げ " + Math.round(load * 90) + "° ／ 穴の形に注目";
+  }
+  apply();
+  ST.sceneApi = { proxy, grabAxis: "x", springBack: false, update(l) { load = l; apply(); } };
+}
+
+/* L6：バーリングタップ（襟を立てて山を稼ぐ） */
+function buildL6() {
+  const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, 1.4), new THREE.MeshStandardMaterial(steelMaps({})));
+  sheet.position.y = -0.5;
+  sheet.castShadow = true;
+  ST.group.add(sheet);
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.42, 24, 1, true),
+    new THREE.MeshStandardMaterial(steelMaps({ side: THREE.DoubleSide })));
+  collar.position.set(0, -0.5, 0);
+  collar.scale.y = 0.01;
+  ST.group.add(collar);
+  const punch = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.10, 0.9, 20), steelMatOf({ color: 0x6a7480 }));
+  punch.position.set(0, -1.25, 0);
+  punch.castShadow = true;
+  ST.group.add(punch);
+  const threads = [];
+  for (let i = 0; i < 4; i++) {
+    const th = new THREE.Mesh(new THREE.TorusGeometry(0.145, 0.014, 8, 24),
+      new THREE.MeshStandardMaterial({ color: 0x7fe0ff, emissive: 0x2ea8ff, emissiveIntensity: 0.5 }));
+    th.rotation.x = Math.PI / 2;
+    th.position.set(0, -0.46 + i * 0.09, 0);
+    th.visible = false;
+    ST.group.add(th);
+    threads.push(th);
+  }
+  setChips('<div class="chip" id="csChip" style="left:20%; top:16%">工程0%：薄板1.0t＋下穴</div>');
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.0, 1.4, 1.8), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.y = -0.4;
+  ST.group.add(proxy);
+  setExtraHTML('<div class="readout" id="l6read"></div>');
+  let load = 0;
+  function apply() {
+    const chip = $("csChip");
+    const r = $("l6read");
+    if (load < 0.5) {
+      const f = load / 0.5;
+      punch.position.y = -1.25 + f * 0.78;
+      collar.scale.y = Math.max(0.01, f);
+      collar.position.y = -0.5 + f * 0.19;
+      threads.forEach((t2) => (t2.visible = false));
+      if (chip) chip.textContent = f < 0.05 ? "工程0%：薄板1.0t＋下穴" : "バーリング成形中…襟が立ち上がる⌒";
+      if (r) r.innerHTML = "襟の高さ ＝ ネジの掛かる肉";
+    } else {
+      punch.position.y = -1.25;
+      collar.scale.y = 1;
+      collar.position.y = -0.31;
+      const f = (load - 0.5) / 0.5;
+      const n = Math.floor(f * 4.99);
+      threads.forEach((t2, i) => (t2.visible = i < n));
+      if (chip) chip.textContent = n >= 4 ? "山4枚!! ガッチリ効く🎉" : "タップ中…山" + n + "枚";
+      if (r) r.innerHTML = "直タップなら山2枚 → バーリングで<b>山4枚</b>";
+    }
+  }
+  apply();
+  ST.sceneApi = { proxy, grabAxis: "x", springBack: false, update(l) { load = l; apply(); } };
+}
+
+const BUILDERS = { l1: buildL1, l2: buildL2, l3: buildL3, l4: buildL4, l5: buildL5, l6: buildL6 };
+
+/* ================================================================
+   🔬 ミクロの目 ── 原子の滑り（結合バネ格子）
+================================================================ */
+const MICRO_LEGEND = '<span style="color:#ff7a6e">■ 赤＝のびた結合</span><span style="color:#6db4ff">■ 青＝ちぢんだ結合</span><span>震え＝温度</span>';
+
+const MICRO = {
+  l1: {
+    gain: 4.5, note: "🔬 金属＝原子がバネ（結合）で整列。<br>曲げると<b>外の列がのび、内の列がちぢむ</b>。",
+    disp: (x, y, l) => [-y * l * 0.5 * Math.sin(Math.PI * x / 4.2), -l * 0.5 * Math.cos(Math.PI * x / 4.2)]
+  },
+  l2: {
+    gain: 2, note: "🔬 強く曲げると原子の列が<b>1列ずつ滑る</b>（すべり＝塑性）。<br>滑った分は<em>戻らない</em>。これが「曲がる」の正体。",
+    disp: (x, y, l) => {
+      const slip = Math.floor(Math.max(0, l - 0.4) * 5) * 0.13;
+      return [(y > 0 ? 1 : 0) * slip + l * 0.3 * y, 0];
+    }
+  },
+  l3: {
+    gain: 4.5, note: "🔬 外の列＝のびる（赤）／内の列＝ちぢむ（青）。<br>まん中の列だけ<b>無傷＝中立軸</b>。展開はこの層で測る。",
+    disp: (x, y, l) => [-y * l * 0.5 * Math.sin(Math.PI * x / 4.2), -l * 0.5 * Math.cos(Math.PI * x / 4.2)]
+  },
+  l4: {
+    gain: 3.5, note: "🔬 曲げ＝<b>バネ成分（戻る）＋滑り成分（残る）</b>。<br>スライダーを0に戻すと…少し曲がったまま＝スプリングバックの正体。",
+    makeDisp: () => {
+      let mx = 0;
+      return (x, y, l) => {
+        mx = Math.max(mx, l);
+        const plastic = Math.max(0, mx - 0.45) * 0.55;
+        const bend = l * 0.28 + plastic * 0.35;
+        return [-y * bend * Math.sin(Math.PI * x / 4.2), -bend * Math.cos(Math.PI * x / 4.2)];
+      };
+    }
+  },
+  l5: {
+    gain: 3, note: "🔬 穴のまわりは担ぎ手がいない。<br>曲げると<b>穴のふちの結合が一番のびる</b>→ゆがみの正体。",
+    occ: (x, y) => Math.sqrt(x * x + y * y) > 0.34,
+    disp: (x, y, l) => {
+      const d = Math.max(0.34, Math.sqrt(x * x + y * y));
+      const k = 1 + 1.2 * Math.exp(-(d - 0.34) * 2.5);
+      return [x * l * 0.06 * k, -y * l * 0.02];
+    }
+  },
+  l6: {
+    gain: 3, note: "🔬 ネジ山＝原子の壁の枚数。<br>上＝薄板（壁2枚・すぐ抜ける）／下＝バーリングで<b>壁4枚</b>。",
+    twoBlocks: true,
+    disp: (x, y, l) => [x * l * 0.02, 0]
+  }
+};
+
+function buildMicro(id) {
+  const cfg = MICRO[id];
+  const a = 0.26;
+  const dummy = new THREE.Object3D();
+  const atoms = [], bonds = [];
+  const blocks = cfg.twoBlocks
+    ? [{ cols: 13, rows: 2, cy: 0.7 }, { cols: 13, rows: 4, cy: -0.6 }]
+    : [{ cols: 15, rows: 5, cy: 0.1 }];
+  blocks.forEach((B) => {
+    const idx = {};
+    for (let i = 0; i < B.cols; i++) for (let j = 0; j < B.rows; j++) for (let k = 0; k < 2; k++) {
+      const lx = (i - (B.cols - 1) / 2) * a, ly = (j - (B.rows - 1) / 2) * a;
+      if (cfg.occ && !cfg.occ(lx, ly)) continue;
+      idx[i + "," + j + "," + k] = atoms.length;
+      atoms.push({ lx, ly, lz: (k - 0.5) * a, cy: B.cy, ph: Math.random() * 6.283 });
+    }
+    for (const key in idx) {
+      const p = key.split(",").map(Number);
+      [[p[0] + 1, p[1], p[2]], [p[0], p[1] + 1, p[2]], [p[0], p[1], p[2] + 1]].forEach((n) => {
+        const nk = n.join(",");
+        if (idx[nk] !== undefined) bonds.push({ i1: idx[key], i2: idx[nk] });
+      });
+    }
+  });
+  const atomMesh = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(0.082, 14, 10),
+    new THREE.MeshStandardMaterial({ color: 0xc9d3dd, metalness: 0.85, roughness: 0.3, envMapIntensity: 1.2 }),
+    atoms.length
+  );
+  atomMesh.castShadow = true;
+  ST.group.add(atomMesh);
+  const bondMesh = new THREE.InstancedMesh(
+    new THREE.CylinderGeometry(0.024, 0.024, 1, 8),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.4, roughness: 0.5 }),
+    bonds.length
+  );
+  ST.group.add(bondMesh);
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(3.8, 2.6, 1.0), new THREE.MeshBasicMaterial({ visible: false }));
+  ST.group.add(proxy);
+
+  const up = new THREE.Vector3(0, 1, 0), dir = new THREE.Vector3(), q = new THREE.Quaternion();
+  const P = atoms.map(() => new THREE.Vector3());
+  let load = 0;
+  const gain = cfg.gain || 3.5;
+  const dispFn = cfg.makeDisp ? cfg.makeDisp() : cfg.disp;
+
+  function step(t) {
+    for (let i = 0; i < atoms.length; i++) {
+      const at = atoms[i];
+      const d = dispFn ? dispFn(at.lx, at.ly, load) : [0, 0];
+      const jig = 0.01;
+      P[i].set(
+        at.lx + d[0] + Math.sin(t * 3.1 + at.ph) * jig,
+        at.cy + at.ly + d[1] + Math.cos(t * 2.7 + at.ph * 1.3) * jig,
+        at.lz + Math.sin(t * 2.3 + at.ph * 2.1) * jig
+      );
+      dummy.position.copy(P[i]);
+      dummy.rotation.set(0, 0, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      atomMesh.setMatrixAt(i, dummy.matrix);
+    }
+    atomMesh.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < bonds.length; i++) {
+      const b = bonds[i];
+      dir.subVectors(P[b.i2], P[b.i1]);
+      const len = dir.length();
+      const s = Math.max(-1, Math.min(1, (len / a - 1) * gain));
+      dummy.position.copy(P[b.i1]).add(P[b.i2]).multiplyScalar(0.5);
+      q.setFromUnitVectors(up, dir.normalize());
+      dummy.quaternion.copy(q);
+      dummy.scale.set(1, len, 1);
+      dummy.updateMatrix();
+      bondMesh.setMatrixAt(i, dummy.matrix);
+      if (s > 0) tc().setRGB(0.85 + 0.15 * s, 0.85 - 0.65 * s, 0.85 - 0.72 * s);
+      else tc().setRGB(0.85 + 0.35 * s, 0.85 + 0.15 * s, 0.85 - 0.15 * s);
+      bondMesh.setColorAt(i, tc());
+    }
+    bondMesh.instanceMatrix.needsUpdate = true;
+    if (bondMesh.instanceColor) bondMesh.instanceColor.needsUpdate = true;
+  }
+  step(0);
+  ST.sceneApi = {
+    proxy, grabAxis: "x", springBack: false,
+    update(l) { load = l; },
+    tick(dt, now) { step(now * 0.001); }
+  };
+}
+
+// ミクロ⇔工場の切りかえ
+let microOn = false;
+function setMicro(on) {
+  if (!ST || ST.fake || !cur) return;
+  microOn = on;
+  const keep = +$("loadRange").value;
+  ST.clearScene();
+  ST.resetView();
+  setExtraHTML("");
+  if (on) {
+    buildMicro(cur.id);
+    $("btnMicro").textContent = "🔭 工場へもどる";
+    $("expNote").innerHTML = MICRO[cur.id].note;
+    $("expLegend").innerHTML = MICRO_LEGEND;
+  } else {
+    BUILDERS[cur.id]();
+    $("btnMicro").textContent = "🔬 ミクロの目（原子で見る）";
+    $("expNote").innerHTML = cur.note;
+    $("expLegend").innerHTML = cur.legend.map((x) => "<span>" + x + "</span>").join("");
+  }
+  $("loadRange").value = keep;
+  onLoadInput();
+}
+
+/* ================================================================
+   🎬 カード専用3D（説明1枚＝専用アニメ1本、全18本）
+================================================================ */
+const CARD_SCENES = {
+  /* ===== L1 板金ってなに？ ===== */
+  l1: [
+    // ①1枚の板から（定尺板の山から1枚スッと出る）
+    function () {
+      const stack = [];
+      for (let i = 0; i < 4; i++) {
+        const s = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.05, 1.3), new THREE.MeshStandardMaterial(steelMaps({})));
+        s.position.set(0, -0.75 + i * 0.07, 0);
+        s.castShadow = true;
+        ST.group.add(s);
+        stack.push(s);
+      }
+      const top = stack[3];
+      setChips('<div class="chip" id="csChip" style="left:18%; top:18%">材料＝定尺板（規格サイズの鋼板）</div>');
+      ST.setView(-0.35, 0.3, 4.4);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const k = Math.min(1, Math.max(0, (t2 - 0.8) / 1.6));
+        top.position.x = k * 1.1;
+        top.position.y = -0.54 + k * 0.25;
+        const c = $("csChip");
+        if (c) c.textContent = k > 0.9 ? "この1枚が部品になる" : "材料＝定尺板（規格サイズの鋼板）";
+        if (t2 > 4) t2 = 0;
+      } };
+    },
+    // ②レーザーで切る（光点が走って火花）
+    function () {
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, 1.4), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.5;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      const laser = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8),
+        new THREE.MeshStandardMaterial({ color: 0xffe0b0, emissive: 0xffa040, emissiveIntensity: 5 }));
+      ST.group.add(laser);
+      const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.2, 8),
+        new THREE.MeshStandardMaterial({ color: 0xffc080, emissive: 0xff9040, emissiveIntensity: 2, transparent: true, opacity: 0.7 }));
+      ST.group.add(beam);
+      const trail = [];
+      const trailMat = new THREE.MeshStandardMaterial({ color: 0x331a08, emissive: 0xff7020, emissiveIntensity: 1.4 });
+      setChips('<div class="chip" style="left:20%; top:16%">レーザー切断＝光のナイフ✂</div>');
+      ST.setView(-0.3, 0.45, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt * 0.45;
+        if (t2 > 1) { t2 = 0; trail.forEach((m) => { ST.group.remove(m); m.geometry.dispose(); }); trail.length = 0; }
+        const ang = t2 * Math.PI * 2;
+        const x = Math.cos(ang) * 0.75, z = Math.sin(ang) * 0.42;
+        laser.position.set(x, -0.44, z);
+        beam.position.set(x, 0.16, z);
+        if (Math.random() < 0.6) {
+          const seg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.015, 0.05), trailMat);
+          seg.position.set(x, -0.465, z);
+          ST.group.add(seg);
+          trail.push(seg);
+        }
+      } };
+    },
+    // ③曲げれば立体（十字→箱に折り上がるループ）
+    function () {
+      const mat = () => new THREE.MeshStandardMaterial(steelMaps({}));
+      const base = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.05, 1.0), mat());
+      base.position.y = -0.5;
+      base.castShadow = true;
+      ST.group.add(base);
+      const flaps = [];
+      [[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]].forEach(([dx, _, dz]) => {
+        const g = new THREE.Group();
+        const p = new THREE.Mesh(new THREE.BoxGeometry(dx !== 0 ? 0.6 : 1.0, 0.05, dz !== 0 ? 0.6 : 1.0), mat());
+        p.position.set(dx * 0.3, 0, dz * 0.3);
+        p.castShadow = true;
+        g.add(p);
+        g.position.set(dx * 0.5, -0.5, dz * 0.5);
+        ST.group.add(g);
+        flaps.push({ g, dx, dz });
+      });
+      setChips('<div class="chip" id="csChip" style="left:22%; top:16%">曲げれば箱にもカバーにも</div>');
+      ST.setView(-0.5, 0.5, 4.3);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 5;
+        const k = cycle < 2 ? Math.min(1, cycle / 1.6) : cycle < 3.5 ? 1 : Math.max(0, 1 - (cycle - 3.5) / 1.2);
+        flaps.forEach(({ g, dx, dz }) => {
+          g.rotation.z = -dx * k * Math.PI / 2;
+          g.rotation.x = dz * k * Math.PI / 2;
+        });
+        const c = $("csChip");
+        if (c) c.textContent = k > 0.95 ? "箱、完成🎉（溶接なしでここまで）" : "曲げれば箱にもカバーにも";
+      } };
+    }
+  ],
+
+  /* ===== L2 曲げ＝挟んで押す ===== */
+  l2: [
+    // ①道具の紹介（パンチとダイが合体）
+    function () {
+      const pb = mkPressBrake(1);
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 1.3), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.42;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      setChips('<div class="chip" style="left:8%; top:20%">パンチ（上の刃）▼</div>' +
+               '<div class="chip" style="right:8%; top:66%">ダイ（V溝の台）▽</div>');
+      ST.setView(-0.25, 0.2, 4.3);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        pb.setStroke(0.15 + Math.sin(t2 * 1.2) * 0.12);
+      } };
+    },
+    // ②深さで角度が決まる（30°→60°→90°）
+    function () {
+      const pb = mkPressBrake(1);
+      const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+      sheet.mesh.position.y = -0.42;
+      setChips('<div class="chip" id="csChip" style="left:22%; top:16%">浅く押す＝30°</div>');
+      ST.setView(-0.25, 0.2, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const phase = Math.floor(t2 / 1.8) % 3;
+        const target = [30, 60, 90][phase];
+        const within = (t2 % 1.8) / 1.8;
+        const ang = target * Math.min(1, within * 1.6);
+        sheet.setBend(ang * Math.PI / 180, true);
+        pb.setStroke(ang / 95);
+        const c = $("csChip");
+        if (c) c.textContent = ["浅く押す＝30°", "もっと押す＝60°", "深く押す＝90°"][phase];
+      } };
+    },
+    // ③R＜板厚は割れる（比較）
+    function () {
+      const good = mkBendSheet({ len: 1.6, wid: 1.0, t: 0.08, lineX: 0, zone: 0.3 });
+      good.mesh.position.set(0, -0.35, -0.62);
+      good.setBend(Math.PI / 2, false);
+      const bad = mkBendSheet({ len: 1.6, wid: 1.0, t: 0.08, lineX: 0, zone: 0.07 });
+      bad.mesh.position.set(0, -0.35, 0.62);
+      bad.setBend(Math.PI / 2, false);
+      // 割れ（ギザギザの黒スジ＋赤点滅）
+      const crackMat = new THREE.MeshStandardMaterial({ color: 0x1a0c06, emissive: 0xff3020, emissiveIntensity: 0.8 });
+      for (let i = 0; i < 5; i++) {
+        const cr = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.02, 0.16), crackMat);
+        cr.position.set(0.04 + (Math.random() - 0.5) * 0.05, -0.28, 0.62 + (i - 2) * 0.18);
+        cr.rotation.y = (Math.random() - 0.5) * 0.8;
+        ST.group.add(cr);
+      }
+      setChips('<div class="chip" style="left:8%; top:24%">R＝板厚以上 ○</div>' +
+               '<div class="chip red" style="left:8%; top:62%">R小さすぎ→外側が割れる✕</div>');
+      ST.setView(-0.4, 0.4, 4.0);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) { t2 += dt; crackMat.emissiveIntensity = 0.5 + 0.5 * Math.sin(t2 * 5); } };
+    }
+  ],
+
+  /* ===== L3 のび＝展開 ===== */
+  l3: [
+    // ①外のび・内ちぢみ（拡大＋矢印）
+    function () {
+      const sheet = mkBendSheet({ len: 1.8, wid: 1.1, t: 0.16, lineX: 0, zone: 0.5 });
+      sheet.mesh.position.y = -0.35;
+      sheet.setBend(Math.PI / 2 * 0.9, true);
+      const arrMat = new THREE.MeshStandardMaterial({ color: 0xff7a5d, emissive: 0xff5030, emissiveIntensity: 0.7 });
+      const a1 = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 12), arrMat);
+      const a2 = a1.clone();
+      ST.group.add(a1); ST.group.add(a2);
+      setChips('<div class="chip" style="left:6%; top:22%">外側＝のびる（赤）</div>' +
+               '<div class="chip" style="left:6%; top:60%">内側＝ちぢむ（青）</div>');
+      ST.setView(-0.3, 0.15, 3.6);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const w = 0.1 + Math.sin(t2 * 3) * 0.05;
+        a1.position.set(0.42 + w, 0.15, 0);
+        a1.rotation.z = -Math.PI / 4;
+        a2.position.set(0.42 - w * 0.5, -0.28, 0);
+        a2.rotation.z = Math.PI - Math.PI / 4;
+      } };
+    },
+    // ②展開は足し算より短い（ゲージ比較）
+    function () {
+      const gaugeMat = steelMatOf({ color: 0x4a525d });
+      [-1.05, 1.05].forEach((x) => {
+        const g = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.5, 1.6), gaugeMat);
+        g.position.set(x, -0.45, 0);
+        g.castShadow = true;
+        ST.group.add(g);
+      });
+      const okStrip = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.06, 0.55), new THREE.MeshStandardMaterial(steelMaps({})));
+      okStrip.position.set(0, -0.55, -0.4);
+      okStrip.castShadow = true;
+      ST.group.add(okStrip);
+      const ngStrip = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.06, 0.55), new THREE.MeshStandardMaterial(steelMaps({})));
+      ngStrip.position.set(-0.2, -0.35, 0.4);
+      ngStrip.castShadow = true;
+      ST.group.add(ngStrip);
+      const excess = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.065, 0.55),
+        new THREE.MeshStandardMaterial({ color: 0xb03028, emissive: 0xff3020, emissiveIntensity: 0.6 }));
+      excess.position.set(0.95, -0.35, 0.4);
+      ST.group.add(excess);
+      setChips('<div class="chip" style="left:6%; top:60%">のび値を引いた展開＝ピッタリ○</div>' +
+               '<div class="chip red" style="left:6%; top:26%">単純な足し算＝長すぎてはみ出す✕</div>');
+      ST.setView(-0.25, 0.35, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) { t2 += dt; excess.material.emissiveIntensity = 0.4 + 0.4 * Math.sin(t2 * 4); } };
+    },
+    // ③中立軸（まん中の白い線は無傷）
+    function () {
+      const sheet = mkBendSheet({ len: 1.8, wid: 1.1, t: 0.18, lineX: 0, zone: 0.5 });
+      sheet.mesh.position.y = -0.35;
+      sheet.setBend(Math.PI / 2 * 0.85, true);
+      // 中立軸ライン（曲げ部の弧に沿った白い光）
+      const nMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xd0f0ff, emissiveIntensity: 1.2 });
+      const R = 0.5 / (Math.PI / 2 * 0.85);
+      for (let i = 0; i <= 10; i++) {
+        const th = (Math.PI / 2 * 0.85) * i / 10;
+        const seg = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.015, 1.12), nMat);
+        seg.position.set(R * Math.sin(th), R * (1 - Math.cos(th)) - 0.35, 0);
+        seg.rotation.z = th;
+        ST.group.add(seg);
+      }
+      setChips('<div class="chip" style="left:16%; top:16%">白い線＝中立軸（のびもちぢみもゼロ）</div>' +
+               '<div class="chip" style="left:16%; top:74%">展開はこの線の長さで測る</div>');
+      ST.setView(-0.3, 0.15, 3.7);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) { t2 += dt; nMat.emissiveIntensity = 0.8 + 0.5 * Math.sin(t2 * 3); } };
+    }
+  ],
+
+  /* ===== L4 スプリングバック ===== */
+  l4: [
+    // ①押す→離すと少し戻る（ループ）
+    function () {
+      const pb = mkPressBrake(1);
+      const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+      sheet.mesh.position.y = -0.42;
+      setChips('<div class="chip" id="csChip" style="left:20%; top:16%">押す…</div>');
+      ST.setView(-0.25, 0.2, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 4.5;
+        let ang, label;
+        if (cycle < 1.8) { ang = 90 * Math.min(1, cycle / 1.5); label = "押す…" + Math.round(ang) + "°"; pb.setStroke(ang / 95); }
+        else if (cycle < 2.4) { ang = 90; label = "90°で保持"; pb.setStroke(90 / 95); }
+        else { ang = 86; label = "離すと…86°（4°戻った＝バネ成分）"; pb.setStroke(0); }
+        sheet.setBend(ang * Math.PI / 180, true);
+        const c = $("csChip");
+        if (c) c.textContent = label;
+      } };
+    },
+    // ②材料で戻りがちがう（鉄 vs SUS）
+    function () {
+      const front = mkBendSheet({ len: 1.9, wid: 0.95, t: 0.06, lineX: 0, zone: 0.28 });
+      front.mesh.position.set(0, -0.42, 0.58);
+      const back = mkBendSheet({ len: 1.9, wid: 0.95, t: 0.06, lineX: 0, zone: 0.28 });
+      back.mesh.position.set(0, -0.42, -0.58);
+      setChips('<div class="chip" style="left:6%; top:60%">手前＝鉄（戻り小→86°）</div>' +
+               '<div class="chip red" style="left:6%; top:24%">奥＝SUS（戻り大→80°）</div>');
+      ST.setView(-0.45, 0.3, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 4.5;
+        let aF, aB;
+        if (cycle < 1.8) { const k = Math.min(1, cycle / 1.5); aF = aB = 90 * k; }
+        else if (cycle < 2.4) { aF = aB = 90; }
+        else { aF = 86; aB = 80; }
+        front.setBend(aF * Math.PI / 180, true);
+        back.setBend(aB * Math.PI / 180, true);
+      } };
+    },
+    // ③オーバーベンド（94°押して90°仕上げ）
+    function () {
+      const pb = mkPressBrake(1);
+      const sheet = mkBendSheet({ len: 2.6, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+      sheet.mesh.position.y = -0.42;
+      setChips('<div class="chip" id="csChip" style="left:16%; top:16%">わざと94°まで押す（オーバーベンド）</div>');
+      ST.setView(-0.25, 0.2, 4.2);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 5;
+        let ang, label;
+        if (cycle < 1.8) { ang = 94 * Math.min(1, cycle / 1.5); label = "わざと94°まで押す（オーバーベンド）"; pb.setStroke(ang / 95); }
+        else if (cycle < 2.4) { ang = 94; label = "94°で保持…"; pb.setStroke(94 / 95); }
+        else { ang = 90; label = "離すと…🎯 90°ピッタリ!!"; pb.setStroke(0); }
+        sheet.setBend(ang * Math.PI / 180, true);
+        const c = $("csChip");
+        if (c) c.textContent = label;
+      } };
+    }
+  ],
+
+  /* ===== L5 曲げ近くの穴 ===== */
+  l5: [
+    // ①曲げ線のまわりは材料が動く（粒が流れる）
+    function () {
+      const sheet = mkBendSheet({ len: 2.4, wid: 1.3, t: 0.06, lineX: 0, zone: 0.3 });
+      sheet.mesh.position.y = -0.42;
+      sheet.setBend(Math.PI / 4, true);
+      const n = 40;
+      const geo2 = new THREE.BufferGeometry();
+      const pa = new Float32Array(n * 3);
+      geo2.setAttribute("position", new THREE.BufferAttribute(pa, 3));
+      const pts = new THREE.Points(geo2, new THREE.PointsMaterial({ color: 0xffb45d, size: 0.06, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
+      ST.group.add(pts);
+      const els = [];
+      for (let i = 0; i < n; i++) els.push({ x: 0.3 + Math.random() * 1.0, z: (Math.random() - 0.5) * 1.2 });
+      setChips('<div class="chip" style="left:16%; top:16%">曲げ線に向かって材料が引っ張られる</div>');
+      ST.setView(-0.3, 0.5, 4.0);
+      ST.sceneApi = { tick(dt) {
+        for (let i = 0; i < els.length; i++) {
+          const e = els[i];
+          e.x -= dt * 0.35;
+          if (e.x < 0.05) e.x = 0.3 + Math.random() * 1.0;
+          pa[i * 3] = e.x;
+          pa[i * 3 + 1] = -0.36;
+          pa[i * 3 + 2] = e.z;
+        }
+        geo2.attributes.position.needsUpdate = true;
+      } };
+    },
+    // ②近い穴だけゆがむ（曲げ⇔戻しループ）
+    function () {
+      const lineX = -0.2, zone = 0.3;
+      const sheet = mkBendSheet({ len: 2.4, wid: 1.2, t: 0.06, lineX, zone });
+      sheet.mesh.position.y = -0.4;
+      const near = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.02, 10, 24),
+        new THREE.MeshStandardMaterial({ color: 0xff5d4d, emissive: 0xff5d4d, emissiveIntensity: 0.6 }));
+      const far = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.02, 10, 24),
+        new THREE.MeshStandardMaterial({ color: 0x3ef0a0, emissive: 0x3ef0a0, emissiveIntensity: 0.5 }));
+      ST.group.add(near); ST.group.add(far);
+      setChips('<div class="chip red" style="left:20%; top:20%">近い穴→楕円✕</div>' +
+               '<div class="chip" style="right:8%; top:46%">遠い穴→丸のまま○</div>');
+      ST.setView(-0.3, 0.4, 4.0);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const k = (Math.sin(t2 * 1.4) + 1) / 2;
+        const aa = k * Math.PI / 2;
+        sheet.setBend(aa, true);
+        const R = aa > 0.001 ? zone / aa : 1e6;
+        [[near, 0.18], [far, 1.0]].forEach(([ring, dx]) => {
+          if (dx <= zone && aa > 0.001) {
+            const th = aa * dx / zone;
+            ring.position.set(lineX + R * Math.sin(th), R * (1 - Math.cos(th)) - 0.4 + 0.04, 0.25);
+            ring.rotation.x = Math.PI / 2 - th;
+          } else {
+            const ex = lineX + (aa > 0.001 ? R * Math.sin(aa) : zone);
+            const ey = aa > 0.001 ? R * (1 - Math.cos(aa)) : 0;
+            const s2 = dx - zone;
+            ring.position.set(ex + s2 * Math.cos(aa), ey + s2 * Math.sin(aa) - 0.4 + 0.04, 0.25);
+            ring.rotation.x = Math.PI / 2 - aa;
+          }
+        });
+        near.scale.set(1 + k * 0.65, 1, 1 - k * 0.18);
+      } };
+    },
+    // ③ルール：板厚×3はなす（安全ゾーンの見取り図）
+    function () {
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, 1.4), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.5;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      const bendLine = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.06, 1.42),
+        new THREE.MeshStandardMaterial({ color: 0xffd64f, emissive: 0xffd64f, emissiveIntensity: 0.8 }));
+      bendLine.position.set(-0.6, -0.48, 0);
+      ST.group.add(bendLine);
+      const dangerMat = new THREE.MeshStandardMaterial({ color: 0xb03028, emissive: 0xff3020, emissiveIntensity: 0.4, transparent: true, opacity: 0.5 });
+      const danger = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.055, 1.42), dangerMat);
+      danger.position.set(-0.36, -0.48, 0);
+      ST.group.add(danger);
+      const okHole = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.02, 10, 24),
+        new THREE.MeshStandardMaterial({ color: 0x3ef0a0, emissive: 0x3ef0a0, emissiveIntensity: 0.6 }));
+      okHole.rotation.x = Math.PI / 2;
+      okHole.position.set(0.45, -0.46, 0.25);
+      ST.group.add(okHole);
+      const ngHole = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.02, 10, 24),
+        new THREE.MeshStandardMaterial({ color: 0xff5d4d, emissive: 0xff5d4d, emissiveIntensity: 0.6 }));
+      ngHole.rotation.x = Math.PI / 2;
+      ngHole.position.set(-0.33, -0.46, -0.3);
+      ST.group.add(ngHole);
+      setChips('<div class="chip" style="left:10%; top:16%">黄線＝曲げ線／赤ゾーン＝板厚×3の危険地帯</div>' +
+               '<div class="chip" style="right:6%; top:60%">ここなら安全○</div>');
+      ST.setView(-0.15, 0.75, 4.1);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) { t2 += dt; dangerMat.emissiveIntensity = 0.3 + 0.3 * Math.sin(t2 * 3); } };
+    }
+  ],
+
+  /* ===== L6 バーリング ===== */
+  l6: [
+    // ①直タップは抜ける（ボルトがグラグラ→スポン）
+    function () {
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 1.2), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.55;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      const bolt = new THREE.Group();
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.55, 18), steelMatOf({ color: 0x8a94a0 }));
+      shaft.position.y = -0.1;
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.13, 6), steelMatOf({ color: 0x6a7480 }));
+      head.position.y = 0.24;
+      bolt.add(shaft); bolt.add(head);
+      bolt.position.y = -0.28;
+      ST.group.add(bolt);
+      setChips('<div class="chip red" id="csChip" style="left:18%; top:16%">薄板に直タップ＝山2枚だけ…</div>');
+      ST.setView(-0.3, 0.25, 3.9);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 4;
+        const c = $("csChip");
+        if (cycle < 2) {
+          bolt.rotation.z = Math.sin(cycle * 14) * 0.07 * cycle;
+          bolt.position.y = -0.28;
+          if (c) c.textContent = "薄板に直タップ＝山2枚だけ…グラグラ";
+        } else if (cycle < 3) {
+          const k = (cycle - 2);
+          bolt.position.y = -0.28 + k * 0.7;
+          bolt.rotation.z = k * 0.5;
+          if (c) c.textContent = "スポン!! 抜けた✕";
+        } else {
+          bolt.position.y = -0.28;
+          bolt.rotation.z = 0;
+        }
+      } };
+    },
+    // ②襟を立てる（バーリング成形ループ）
+    function () {
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 1.2), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.55;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.4, 24, 1, true),
+        new THREE.MeshStandardMaterial(steelMaps({ side: THREE.DoubleSide })));
+      collar.position.set(0, -0.55, 0);
+      ST.group.add(collar);
+      const punch = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.10, 0.8, 20), steelMatOf({ color: 0x6a7480 }));
+      punch.position.set(0, -1.2, 0);
+      punch.castShadow = true;
+      ST.group.add(punch);
+      setChips('<div class="chip" id="csChip" style="left:16%; top:16%">下からパンチで押し上げると…</div>');
+      ST.setView(-0.3, 0.2, 3.9);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        const cycle = t2 % 3.6;
+        const k = cycle < 1.8 ? Math.min(1, cycle / 1.5) : Math.max(0, 1 - (cycle - 1.8) / 1.4);
+        punch.position.y = -1.2 + k * 0.75;
+        collar.scale.y = Math.max(0.01, k);
+        collar.position.y = -0.55 + k * 0.18;
+        const c = $("csChip");
+        if (c) c.textContent = k > 0.9 ? "襟（えり）が立った＝バーリング⌒" : "下からパンチで押し上げると…";
+      } };
+    },
+    // ③山3枚以上でガッチリ（ゆすっても動かない）
+    function () {
+      const sheet = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 1.2), new THREE.MeshStandardMaterial(steelMaps({})));
+      sheet.position.y = -0.55;
+      sheet.castShadow = true;
+      ST.group.add(sheet);
+      const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.4, 24, 1, true),
+        new THREE.MeshStandardMaterial(steelMaps({ side: THREE.DoubleSide })));
+      collar.position.set(0, -0.37, 0);
+      ST.group.add(collar);
+      for (let i = 0; i < 4; i++) {
+        const th = new THREE.Mesh(new THREE.TorusGeometry(0.145, 0.014, 8, 24),
+          new THREE.MeshStandardMaterial({ color: 0x7fe0ff, emissive: 0x2ea8ff, emissiveIntensity: 0.7 }));
+        th.rotation.x = Math.PI / 2;
+        th.position.set(0, -0.5 + i * 0.09, 0);
+        ST.group.add(th);
+      }
+      const bolt = new THREE.Group();
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.6, 18), steelMatOf({ color: 0x8a94a0 }));
+      shaft.position.y = -0.15;
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.13, 6), steelMatOf({ color: 0x6a7480 }));
+      head.position.y = 0.22;
+      bolt.add(shaft); bolt.add(head);
+      bolt.position.y = -0.22;
+      ST.group.add(bolt);
+      setChips('<div class="chip" id="csChip" style="left:14%; top:16%">山4枚＝ゆすっても抜けない○</div>');
+      ST.setView(-0.3, 0.25, 3.9);
+      let t2 = 0;
+      ST.sceneApi = { tick(dt) {
+        t2 += dt;
+        // ゆすりテスト（ボルトはビクともしない＝板ごと僅かに揺れるだけ）
+        const sh = Math.sin(t2 * 10) * 0.008;
+        sheet.position.x = sh;
+        bolt.position.x = sh;
+        collar.position.x = sh;
+        const c = $("csChip");
+        if (c) c.textContent = (Math.floor(t2 / 2) % 2 === 0) ? "山4枚＝ゆすっても抜けない○" : "1.0tの薄板でもM3がガッチリ効く";
+      } };
+    }
+  ]
+};
+function buildCardScene(id, i) {
+  if (!ST || ST.fake) return;
+  ST.clearScene();
+  ST.resetView();
+  const f = CARD_SCENES[id] && CARD_SCENES[id][i];
+  if (f) f(); else BUILDERS[id]();
+  requestAnimationFrame(() => ST.resize());
+}
+
+/* ================================================================
+   レッスンの流れ
+================================================================ */
+let curIdx = 0, cur = null, missionPick = -1, cardIdx = 0;
+
+function openLesson(i) {
+  curIdx = i;
+  cur = LESSONS[i];
+  missionPick = -1;
+  showView("viewLesson");
+  $("lsTag").textContent = cur.tag;
+  $("lsTitle").textContent = cur.title;
+  $("msNo").innerHTML = cur.mission.no;
+  $("msQ").innerHTML = cur.mission.q;
+  const wrap = $("msOpts");
+  wrap.innerHTML = "";
+  cur.mission.opts.forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = (idx + 1) + ". " + o;
+    b.addEventListener("click", () => { missionPick = idx; startExp(); });
+    wrap.appendChild(b);
+  });
+  setPhase("phMission");
+}
+
+function rebuildScene() {
+  if (!ST || ST.fake) return;
+  ST.clearScene();
+  $("loadRange").value = 0;
+  $("loadVal").textContent = cur.val(0);
+  setExtraHTML("");
+  if (microOn) {
+    buildMicro(cur.id);
+    $("expNote").innerHTML = MICRO[cur.id].note;
+  } else {
+    BUILDERS[cur.id]();
+    $("expNote").innerHTML = cur.note;
+  }
+  onLoadInput();
+}
+
+function startExp() {
+  setPhase("phExp");
+  $("guessLine").textContent = "きみの予想：「" + cur.mission.opts[missionPick] + "」── 実験で確かめよう";
+  $("sliderLabel").textContent = cur.sliderLabel;
+  $("expLegend").innerHTML = cur.legend.map((x) => "<span>" + x + "</span>").join("");
+  $("expNote").innerHTML = cur.note;
+  setExtraHTML("");
+  $("loadRange").value = 0;
+  $("loadVal").textContent = cur.val(0);
+  const btn = $("btnToReveal");
+  btn.disabled = true;
+  microOn = false;
+  $("btnMicro").textContent = "🔬 ミクロの目（原子で見る）";
+  ensureStage();
+  if (ST.fake) { btn.disabled = false; return; }
+  ST.clearScene();
+  ST.resetView();
+  BUILDERS[cur.id]();
+  ST.resize();
+}
+$("btnMicro").addEventListener("click", () => setMicro(!microOn));
+
+function onLoadInput() {
+  const v = +$("loadRange").value;
+  $("loadVal").textContent = cur ? cur.val(v) : v;
+  if (ST && !ST.fake && ST.sceneApi && ST.sceneApi.update) ST.sceneApi.update(v / 100);
+  $("btnToReveal").disabled = false;
+}
+$("loadRange").addEventListener("input", onLoadInput);
+
+$("btnToReveal").addEventListener("click", () => {
+  const m = cur.mission;
+  const hit = missionPick === m.ans;
+  $("rvBanner").innerHTML = (hit ? "🎯 予想的中！" : "💡 実験で見えたね！") + "<small>こたえ：" + m.ansLine + "</small>";
+  cardIdx = 0;
+  setPhase("phReveal");
+  renderCard();
+});
+
+function renderCard() {
+  $("rvCard").innerHTML = "<div>" + cur.cards[cardIdx] + "</div>";
+  $("rvDots").innerHTML = cur.cards.map((_, i) => (i <= cardIdx ? "<span>●</span>" : "○")).join("");
+  $("btnCardNext").textContent = cardIdx < cur.cards.length - 1 ? "つぎ →" : "ミニクイズへ →";
+  buildCardScene(cur.id, cardIdx);
+}
+$("btnCardNext").addEventListener("click", () => {
+  if (cardIdx < cur.cards.length - 1) { cardIdx++; renderCard(); }
+  else startQuiz();
+});
+
+function startQuiz() {
+  setPhase("phQuiz");
+  const qz = cur.quiz;
+  $("qzQ").textContent = qz.q;
+  $("qzExp").style.display = "none";
+  $("btnQuizDone").style.display = "none";
+  const wrap = $("qzOpts");
+  wrap.innerHTML = "";
+  let answered = false;
+  qz.opts.forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = (idx + 1) + ". " + o;
+    b.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      wrap.querySelectorAll(".opt").forEach((x, xi) => {
+        if (xi === qz.ans) x.classList.add("correct");
+        else if (xi === idx) x.classList.add("wrong");
+        else x.classList.add("dim");
+      });
+      $("qzExp").innerHTML = qz.exp;
+      $("qzExp").style.display = "block";
+      $("btnQuizDone").style.display = "block";
+    });
+    wrap.appendChild(b);
+  });
+}
+
+$("btnQuizDone").addEventListener("click", () => {
+  progress.done[cur.id] = true;
+  bumpStreak();
+  saveProgress();
+  $("clearStamp").innerHTML = cur.tag + " CLEAR!<small>今朝の15分 完了</small>";
+  $("teaserBox").innerHTML = "🔮 <b>これが分かると…</b><br>" + (cur.teaser || "");
+  const s = progress.streak;
+  $("clearMsg").innerHTML = "🔥 " + s.n + "週れんぞく<br>" + (curIdx < LESSONS.length - 1 ? "次回：" + LESSONS[curIdx + 1].tag + " " + LESSONS[curIdx + 1].title : "次回：章ボス戦！");
+  setPhase("phClear");
+});
+
+$("btnGoHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+$("btnBack").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   ボス戦（7問）
+================================================================ */
+let bIdx = 0, bScore = 0;
+function openBoss() {
+  bIdx = 0; bScore = 0;
+  showView("viewBoss");
+  $("bossPlay").style.display = "block";
+  $("bossResult").style.display = "none";
+  renderBossQ();
+}
+function renderBossQ() {
+  const q = BOSS[bIdx];
+  $("bsProgress").textContent = "第" + (bIdx + 1) + "問 ／ 7問中 ── 正解 " + bScore;
+  $("bsQ").textContent = q.q;
+  $("bsExp").style.display = "none";
+  $("btnBossNext").style.display = "none";
+  const wrap = $("bsOpts");
+  wrap.innerHTML = "";
+  let answered = false;
+  q.opts.forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = (idx + 1) + ". " + o;
+    b.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      if (idx === q.ans) bScore++;
+      wrap.querySelectorAll(".opt").forEach((x, xi) => {
+        if (xi === q.ans) x.classList.add("correct");
+        else if (xi === idx) x.classList.add("wrong");
+        else x.classList.add("dim");
+      });
+      $("bsExp").innerHTML = q.exp;
+      $("bsExp").style.display = "block";
+      $("btnBossNext").style.display = "block";
+      $("btnBossNext").textContent = bIdx < BOSS.length - 1 ? "つぎ →" : "結果を見る →";
+    });
+    wrap.appendChild(b);
+  });
+}
+$("btnBossNext").addEventListener("click", () => {
+  if (bIdx < BOSS.length - 1) { bIdx++; renderBossQ(); }
+  else {
+    $("bossPlay").style.display = "none";
+    $("bossResult").style.display = "block";
+    $("bsScore").textContent = bScore + " / 7";
+    if (bScore >= 5) {
+      progress.done["l7"] = true;
+      bumpStreak();
+      saveProgress();
+      $("bsMsg").innerHTML = "🏆 第1章 制覇！<br>第2章「図面と現場へ」は次のアップデートで配信。<br>それまで週1でボス戦の復習もアリ。";
+    } else {
+      $("bsMsg").innerHTML = "あと少し！ 5問正解でクリア。<br>まちがえたレッスンを触り直してから再挑戦。";
+    }
+  }
+});
+$("btnBossHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+$("btnBackB").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   起動
+================================================================ */
+renderHome();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

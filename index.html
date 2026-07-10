@@ -202,9 +202,259 @@
   .stamp small { display: block; font-size: 11px; font-weight: 700; }
   .clearmsg { margin-top: 18px; font-size: 15px; color: #b3c5d8; line-height: 1.85; }
   .bossscore { margin-top: 30px; font-size: 42px; font-weight: 900; color: #fff3e6; text-shadow: 0 0 18px rgba(255,157,77,0.7); }
+
+  /* ================================================================
+     BEND FORGE v2 追加装備 CSS（COAT v1.1装備＋新機能5・板金パレット）
+  ================================================================ */
+
+  /* ===== 打刻スプラッシュ「一撃曲げ」 ===== */
+  #splash {
+    position: fixed; inset: 0; z-index: 90; background: #05070a;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+    transition: opacity 0.45s; overflow: hidden;
+  }
+  #splash.off { opacity: 0; pointer-events: none; }
+  #spmist { position: absolute; inset: 0; pointer-events: none; }
+  .lwrap { position: relative; padding: 30px 30px 12px; perspective: 600px; }
+  .plateWrap { position: relative; width: 260px; height: 70px; transform-style: preserve-3d; }
+  .plate {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #3a4250, #1c222c); border: 1px solid #4a5568; border-radius: 6px;
+    transform-origin: center center; transform: rotateX(0deg);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.04);
+    transition: transform 0.5s cubic-bezier(.22,1.6,.4,1);
+  }
+  .plate.bent { transform: rotateX(-26deg); }
+  .plate.spring { transform: rotateX(-20deg); }
+  .stitle {
+    font-size: 27px; font-weight: 900; letter-spacing: 4px; color: #fff3e6;
+    text-shadow: 0 0 18px rgba(255,157,77,0.6); position: relative; z-index: 2;
+  }
+  .stitle .accent { color: #7fe0ff; text-shadow: 0 0 18px rgba(79,209,255,0.7); }
+  .foldline {
+    position: absolute; left: 8%; right: 8%; top: 50%; height: 2px; z-index: 3;
+    background: linear-gradient(90deg, transparent, #ffd64f, transparent);
+    opacity: 0; box-shadow: 0 0 10px 2px rgba(255,214,79,0.8);
+  }
+  .foldline.lit { opacity: 1; }
+  .punch {
+    position: absolute; left: 50%; top: -60px; width: 20px; height: 44px; margin-left: -10px; z-index: 4;
+    background: linear-gradient(180deg, #8a94a0, #4a525d); border-radius: 3px 3px 8px 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: top 0.32s cubic-bezier(.5,0,.9,1);
+  }
+  .punch.down { top: 6px; }
+  .punch.up { top: -60px; transition: top 0.5s ease-out; }
+  .ssub { font-size: 11.5px; color: #8fa6bd; letter-spacing: 2px; opacity: 0; transition: opacity 0.45s; margin-top: 8px; }
+  .ssub.lit { opacity: 1; }
+  .sskip { margin-top: 4px; font-size: 10.5px; color: #33445a; opacity: 0; transition: opacity 0.45s; }
+  .sskip.lit { opacity: 1; }
+
+  /* ===== ⚡FORGEレベル（ヘッダー） ===== */
+  .xprow { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+  .xplv { font-size: 12.5px; font-weight: 900; color: #ffcf9e; white-space: nowrap; text-shadow: 0 0 10px rgba(255,157,77,0.5); }
+  .xpbar { flex: 1; height: 7px; border-radius: 5px; background: #0e1520; overflow: hidden; }
+  .xpbar div { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d4d, #7fe0ff); transition: width 0.6s; }
+
+  /* ===== 🔥FORGE DAILY／⚡復習キューカード ===== */
+  .rqcard, .dailycard {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 12px; padding: 12px 14px; border-radius: 13px;
+    cursor: pointer; font: inherit; width: 100%; text-align: left; color: inherit;
+  }
+  .rqcard { border: 1.5px solid rgba(255,157,77,0.7); background: rgba(255,157,77,0.08); }
+  .rqcard .rqt { font-size: 14px; font-weight: 900; color: #ffd9a3; }
+  .rqcard .rqs { font-size: 10.5px; color: #c9a86a; margin-top: 2px; }
+  .rqcard .rqarrow { font-size: 18px; color: #ffd9a3; }
+  .dailycard { border: 1.5px solid rgba(160,123,255,0.75); background: linear-gradient(90deg, rgba(160,123,255,0.12), rgba(79,209,255,0.08)); }
+  .dailycard .rqt { font-size: 14px; font-weight: 900; color: #d9c8ff; }
+  .dailycard .rqs { font-size: 10.5px; color: #a89ad0; margin-top: 2px; }
+  .dailycard .rqarrow { font-size: 18px; color: #d9c8ff; }
+
+  /* ===== 🦠 錆サマリー ===== */
+  .rustchip {
+    display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding: 8px 13px;
+    border-radius: 999px; border: 1px solid rgba(255,93,77,0.5); background: rgba(255,93,77,0.08);
+    color: #ffb6a8; font-size: 12px; font-weight: 800; cursor: pointer; width: 100%; font: inherit; text-align: left;
+  }
+
+  /* ===== 育つ曲げ製品（ホームヒーロー） ===== */
+  .growhero { margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #1d2c42; background: linear-gradient(165deg, #0e1524, #0a0f18); }
+  .growhero .gstage { position: relative; height: 172px; touch-action: none; cursor: grab; }
+  .growhero .gstage canvas { display: block; }
+  .growhero .gfallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #6b7f96; font-size: 12px; text-align: center; padding: 0 20px; }
+  .growhero .gline { padding: 9px 14px 11px; font-size: 12.5px; color: #a8bcd2; text-align: center; }
+  .growhero .gline b { color: #ffcf9e; font-size: 13.5px; }
+  .growhero .gbar { margin: 7px 3px 0; height: 8px; border-radius: 5px; background: #0e1520; overflow: hidden; }
+  .growhero .gbar div { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d4d, #4fd1ff); transition: width 0.8s; }
+
+  /* ===== 🛂 FORGE PASSPORT ===== */
+  .passport { margin-top: 14px; border: 1.5px solid rgba(160,123,255,0.55); border-radius: 13px; padding: 11px 12px; background: rgba(160,123,255,0.05); }
+  .passport .pt { font-size: 12px; font-weight: 900; color: #d9c8ff; margin-bottom: 8px; }
+  .pbadges { display: flex; gap: 6px; flex-wrap: wrap; align-items: stretch; }
+  .lvchip { flex: 1 1 28%; min-width: 54px; text-align: center; border: 1.5px solid rgba(255,157,77,0.6); border-radius: 10px; padding: 7px 6px; background: rgba(255,157,77,0.1); }
+  .lvchip .lvn { font-size: 14px; font-weight: 900; color: #ffcf9e; }
+  .lvchip .lvl { font-size: 9px; color: #c9a86a; margin-top: 2px; }
+  .pbadge { flex: 1 1 28%; min-width: 70px; text-align: center; border: 1px solid #24344a; border-radius: 10px; padding: 7px 3px; background: #0b1220; font-size: 10px; color: #8fa6bd; text-decoration: none; }
+  .pbemoji { font-size: 15px; line-height: 1; }
+  .pbname { margin-top: 3px; font-size: 10px; font-weight: 800; color: #a8bcd2; }
+  .pbpct { margin-top: 2px; font-size: 11.5px; font-weight: 900; color: #7fe0ff; }
+  .pbbar { margin-top: 4px; height: 4px; border-radius: 3px; background: #101825; overflow: hidden; }
+  .pbbar div { height: 100%; background: linear-gradient(90deg, #4fd1ff, #ff9d4d); }
+
+  /* ===== 🎰称号棚 ===== */
+  .titleshelf { margin-top: 10px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .titlebadge { flex: 1; min-width: 90px; text-align: center; padding: 8px 5px; border-radius: 10px; border: 1px solid rgba(255,157,77,0.5); background: rgba(255,157,77,0.08); font-size: 10.5px; font-weight: 800; color: #ffcf9e; }
+  .titlebadge.locked { border-color: #24344a; background: #0b1220; color: #3d5169; }
+  .titlebadge .temoji { font-size: 16px; display: block; margin-bottom: 3px; }
+
+  /* ===== 🎯自信ベット・較正メーター ===== */
+  .confrow { display: flex; gap: 10px; margin-top: 14px; }
+  .confbtn {
+    flex: 1; padding: 14px 6px; border-radius: 13px; font: inherit; font-weight: 900; font-size: 14.5px; cursor: pointer;
+    border: 1.5px solid #2a3c56; background: #0b1220; color: #dfeaf6;
+  }
+  .confbtn.hi { border-color: #ff9d4d; color: #ffcf9e; }
+  .confbtn.mid { border-color: #7fe0ff; color: #bfe9f4; }
+  .calibline { margin-top: 10px; text-align: center; font-size: 11.5px; color: #7fe0ff; }
+
+  /* ===== 🎓教えるモード ===== */
+  .teachhint { margin-top: 10px; font-size: 11px; color: #5d7690; text-align: center; }
+  .teachbox { margin-top: 18px; text-align: left; }
+  .teachbox .tlabel { font-size: 12.5px; color: #c9b4ff; font-weight: 800; margin-bottom: 6px; }
+  .teachbox textarea {
+    width: 100%; min-height: 62px; border-radius: 11px; border: 1.5px solid #2a3c56; background: #0b1220;
+    color: #dfeaf6; font: inherit; font-size: 13.5px; padding: 10px 12px; resize: vertical;
+  }
+  .teachbtnrow { display: flex; gap: 8px; margin-top: 8px; }
+  .teachbtnrow button { flex: 1; padding: 10px 6px; border-radius: 10px; font: inherit; font-weight: 800; font-size: 12.5px; cursor: pointer; }
+  .teachbtnrow .tsend { border: none; background: linear-gradient(135deg, #a07bff, #7fe0ff); color: #1a0d02; }
+  .teachbtnrow .tskip { border: 1px solid #2a3c56; background: #0b1220; color: #8fa6bd; }
+  .teachedback { margin-top: 8px; font-size: 12px; color: #7fe0ff; text-align: center; }
+  .notebookitem { border: 1px solid #1d2c42; border-radius: 11px; padding: 10px 12px; margin-top: 8px; background: #0b1220; }
+  .notebookitem .nbhead { font-size: 11px; color: #7fe0ff; font-weight: 800; margin-bottom: 4px; }
+  .notebookitem .nbtxt { font-size: 13px; color: #dfeaf6; line-height: 1.6; }
+  .teachnote { margin-top: 8px; padding: 9px 11px; border-radius: 9px; background: rgba(160,123,255,0.08); border-left: 3px solid #a07bff; font-size: 12.5px; color: #d9c8ff; line-height: 1.6; }
+
+  /* ===== 🦠サビ段階（マップノード） ===== */
+  .node.fresh .dot { box-shadow: 0 0 14px 3px rgba(79,209,255,0.7); }
+  .node.dull .dot { filter: saturate(0.55); }
+  .node.rust1 .dot { background-image: radial-gradient(circle at 30% 30%, rgba(190,110,50,0.55) 0 20%, transparent 21%), radial-gradient(circle at 70% 65%, rgba(190,110,50,0.5) 0 16%, transparent 17%); }
+  .node.rust2 .dot { border-color: #b0402e !important; background-image: radial-gradient(circle at 35% 35%, rgba(176,64,40,0.75) 0 30%, transparent 31%), radial-gradient(circle at 65% 60%, rgba(176,64,40,0.7) 0 24%, transparent 25%); box-shadow: 0 0 10px rgba(176,64,40,0.5); }
+  .node.rust2 .lbl { color: #ff9d8f; }
+  .repaintfx { position: absolute; inset: -6px; border-radius: 50%; pointer-events: none; }
+  .repaintfx.go { animation: repaintSweep 0.9s ease-out; }
+  @keyframes repaintSweep { 0% { box-shadow: 0 0 0 0 rgba(79,209,255,0.9), inset 0 0 0 0 rgba(255,157,77,0.9); } 100% { box-shadow: 0 0 0 22px rgba(79,209,255,0), inset 0 0 0 22px rgba(255,157,77,0); } }
+
+  /* ===== ⚔判断ドリル ===== */
+  .drillcard {
+    border: 1.5px solid rgba(255,157,77,0.6); border-radius: 16px; padding: 18px 16px;
+    background: linear-gradient(160deg, rgba(255,157,77,0.08), rgba(5,9,11,0.2));
+  }
+  .drillhead { font-size: 12px; color: #ffcf9e; font-weight: 800; letter-spacing: 1px; }
+  .drillq { font-size: 17.5px; font-weight: 800; color: #fff3e6; line-height: 1.7; margin-top: 10px; }
+  .drilltag { display: inline-block; margin-top: 8px; font-size: 11px; color: #93a5b3; }
+  .okngrow { display: flex; gap: 10px; margin-top: 16px; }
+  .okngrow button {
+    flex: 1; padding: 18px 6px; border-radius: 14px; font: inherit; font-weight: 900; font-size: 18px; cursor: pointer;
+    border: 2px solid #2a3c56; background: #0b1220; color: #dfeaf6;
+  }
+  .okngrow button.pickOK { border-color: #3ef0a0; color: #3ef0a0; }
+  .okngrow button.pickNG { border-color: #ff5d4d; color: #ff5d4d; }
+  .okngrow button.correct { background: rgba(62,240,160,0.15); box-shadow: 0 0 14px rgba(62,240,160,0.3); }
+  .okngrow button.wrong { background: rgba(255,93,77,0.15); box-shadow: 0 0 14px rgba(255,93,77,0.3); }
+  .okngrow button.dim { opacity: 0.4; }
+  .drillexp {
+    margin-top: 14px; padding: 12px 14px; border-radius: 10px; border-left: 3px solid #ffcf9e;
+    background: rgba(255,157,77,0.08); font-size: 14px; color: #ffe3c4; line-height: 1.7;
+  }
+  .drillresultrow { display: flex; justify-content: center; gap: 8px; margin: 20px 0 6px; flex-wrap: wrap; }
+  .drillresultrow span { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
+  .drillresultrow span.o { background: rgba(62,240,160,0.18); color: #3ef0a0; border: 1.5px solid #3ef0a0; }
+  .drillresultrow span.x { background: rgba(255,93,77,0.18); color: #ff5d4d; border: 1.5px solid #ff5d4d; }
+  .weaklist { margin-top: 16px; font-size: 13px; color: #93a5b3; line-height: 1.9; text-align: left; }
+  .weaklist b { color: #ffcf9e; }
+  .appchip { display: inline-block; margin-bottom: 8px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; background: rgba(160,123,255,0.15); border: 1px solid rgba(160,123,255,0.5); color: #d9c8ff; }
+
+  /* ===== 🛣板金街道マスターマップ ===== */
+  .mapstage { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .mapstagebox { border-radius: 14px; padding: 13px 14px; border: 1px solid #1d2c42; background: linear-gradient(165deg, #0e1524, #0a0f18); }
+  .mapstagebox.current { border-color: rgba(79,209,255,0.7); box-shadow: 0 0 16px rgba(79,209,255,0.2); }
+  .mapstagebox .msTitle { font-size: 13.5px; font-weight: 900; color: #eaf6ff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .mapstagebox .mspin { color: #ffcf9e; font-size: 13px; }
+  .mapstagebox .msDesc { margin-top: 6px; font-size: 12px; color: #93a5b3; line-height: 1.6; }
+  .mapchaps { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .mapchap { font-size: 11px; padding: 5px 9px; border-radius: 7px; border: 1px solid #2a3c56; color: #7f96a3; background: #0b1220; }
+  .mapchap.done { border-color: #4fd1ff; color: #bfe9f4; background: rgba(79,209,255,0.1); }
+  .mapchap.now { border-color: #ff9d4d; color: #ffd9a3; background: rgba(255,157,77,0.14); }
+  .mapbros { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #2a3c56; }
+  .mapbros .mbTitle { font-size: 12px; color: #5d7690; font-weight: 800; margin-bottom: 8px; }
+  .mapbroslink { display: block; padding: 10px 12px; margin-top: 7px; border-radius: 10px; border: 1px solid #1d2c42; background: #0b1220; color: #8fa6bd; font-size: 12.5px; text-decoration: none; }
+  .mapbroslink b { color: #bfe9f4; }
+  .btnrow2 { display: flex; gap: 9px; margin-top: 14px; }
+  .btnrow2 .bb {
+    flex: 1; text-align: center; padding: 13px 6px; border-radius: 13px; font-size: 13.5px; font-weight: 900;
+    border: 1.5px solid rgba(255,157,77,0.6); color: #ffd9a3; background: rgba(255,157,77,0.08); cursor: pointer; font-family: inherit;
+  }
+  .btnrow2 .bb.map { border-color: rgba(79,209,255,0.6); color: #a8e6f4; background: rgba(79,209,255,0.08); }
+  .btnrow2 .bb.note { border-color: rgba(160,123,255,0.6); color: #d9c8ff; background: rgba(160,123,255,0.08); }
+
+  /* ===== 📷 現場の目モーダル ===== */
+  #photoModal { display: none; position: fixed; inset: 0; z-index: 60; background: rgba(4,6,9,.87); align-items: center; justify-content: center; padding: 14px; }
+  .pm-sheet { position: relative; width: min(560px, 100%); max-height: 92vh; overflow-y: auto; background: #0d1420; border: 1px solid #24344a; border-radius: 16px; padding: 14px 14px 18px; }
+  #pmClose { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #2a3c56; background: #101825; color: #cfd6df; font-size: 15px; z-index: 2; }
+  #pmTitle { font-weight: 800; font-size: 15px; color: #ffd9a3; margin: 2px 40px 10px 2px; }
+  #pmFig { position: relative; border-radius: 12px; overflow: hidden; background: #070a0d; }
+  #pmFig img { display: block; width: 100%; height: auto; }
+  .pm-marker { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 6px; pointer-events: none; }
+  .pm-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #4fd1ff; background: rgba(79,209,255,.25); animation: pmPulse 1.6s infinite; flex: none; }
+  .pm-label { background: rgba(5,9,11,.85); border: 1px solid #4fd1ff; color: #dff5fb; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; max-width: 52vw; line-height: 1.4; }
+  @keyframes pmPulse { 0% { box-shadow: 0 0 0 0 rgba(79,209,255,.6); } 70% { box-shadow: 0 0 0 12px rgba(79,209,255,0); } 100% { box-shadow: 0 0 0 0 rgba(79,209,255,0); } }
+  #pmCap { color: #c6cdd6; font-size: 12.5px; line-height: 1.75; margin: 10px 2px 4px; }
+  .pm-video { display: inline-block; margin: 8px 0 2px; padding: 9px 14px; border-radius: 999px; background: #b8352f; color: #fff; font-weight: 800; font-size: 12.5px; text-decoration: none; }
+  #pmCredit { color: #7b838d; font-size: 10.5px; margin-top: 8px; }
+
+  /* ===== 🎰ご褒美ガチャ ===== */
+  #gachaModal { display: none; position: fixed; inset: 0; z-index: 70; background: rgba(3,5,7,.9); align-items: center; justify-content: center; padding: 16px; }
+  .gc-sheet { position: relative; width: min(360px, 100%); text-align: center; padding: 26px 20px; border-radius: 20px; border: 1px solid #24344a; background: linear-gradient(165deg, #0e1524, #05090b); overflow: hidden; }
+  .gc-roll { font-size: 42px; animation: gcSpin 0.8s steps(8); }
+  @keyframes gcSpin { from { transform: rotate(0deg); } to { transform: rotate(1080deg); } }
+  .gc-tier { margin-top: 14px; font-size: 13px; font-weight: 900; letter-spacing: 2px; }
+  .gc-tier.normal { color: #8fa6bd; }
+  .gc-tier.rare { color: #c9d3dd; text-shadow: 0 0 12px rgba(200,210,220,0.7); }
+  .gc-tier.epic { color: #ffd64f; text-shadow: 0 0 16px rgba(255,214,79,0.8); }
+  .gc-title { margin-top: 8px; font-size: 19px; font-weight: 900; color: #fff3e6; }
+  .gc-sub { margin-top: 6px; font-size: 12px; color: #93a5b3; }
+  .gc-plate { width: 90px; height: 50px; margin: 16px auto 0; background: linear-gradient(160deg,#ffd64f,#b8860b); border-radius: 6px; box-shadow: 0 0 26px rgba(255,214,79,0.6); animation: gcFold 2s ease-in-out; }
+  @keyframes gcFold { 0% { transform: rotateY(0deg) scale(1); } 35% { transform: rotateY(160deg) scaleY(0.4); } 55% { transform: rotateY(360deg) scaleY(1) rotateX(-40deg); } 100% { transform: rotateY(720deg) rotateX(0deg); } }
+  #gcClose { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 12px; font: inherit; font-weight: 900; background: linear-gradient(135deg, #ff9d4d, #ffc37a); color: #1a0d02; cursor: pointer; }
+  .gc-particle { position: absolute; border-radius: 50%; pointer-events: none; }
+
+  /* ===== 📖 俺の言葉ノート ===== */
+  #notebookModal { display: none; position: fixed; inset: 0; z-index: 65; background: rgba(4,6,9,.87); align-items: center; justify-content: center; padding: 14px; }
+  .nb-sheet { position: relative; width: min(520px, 100%); max-height: 86vh; overflow-y: auto; background: #0d1420; border: 1px solid #24344a; border-radius: 16px; padding: 16px 15px 18px; }
+  #nbClose { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #2a3c56; background: #101825; color: #cfd6df; font-size: 15px; }
+  .nb-title { font-weight: 900; font-size: 15px; color: #d9c8ff; margin: 2px 40px 10px 2px; }
+  .nb-empty { text-align: center; color: #5d7690; font-size: 13px; padding: 30px 10px; }
 </style>
 </head>
 <body>
+
+<div id="splash">
+  <canvas id="spmist"></canvas>
+  <div class="lwrap">
+    <div class="plateWrap">
+      <div class="plate" id="splashPlate">
+        <div class="stitle" id="stitle">BEND <span class="accent">FORGE</span></div>
+      </div>
+      <div class="foldline" id="foldline"></div>
+      <div class="punch" id="splashPunch"></div>
+    </div>
+  </div>
+  <div class="ssub" id="ssub">板金設計 ── 一撃で曲がる・朝15分道場</div>
+  <div class="sskip" id="sskip">タップでスキップ</div>
+</div>
+
 <canvas id="bgfx"></canvas>
 <div id="app">
 
@@ -212,6 +462,33 @@
   <section id="viewHome" style="display:block">
     <div class="home-logo">BEND FORGE</div>
     <div class="home-sub">板金×設計 ── 朝15分・触って曲げて覚える道場</div>
+
+    <div class="xprow"><span class="xplv" id="xpLvText">⚡FORGE Lv.1</span><div class="xpbar"><div id="xpBarFill"></div></div></div>
+
+    <button class="dailycard" id="btnDaily" style="display:none">
+      <div><div class="rqt" id="dailyTitle">🔥 FORGE DAILY ── 家族ミックス5問</div><div class="rqs">兄弟アプリを交ぜて記憶を鍛える</div></div>
+      <div class="rqarrow">→</div>
+    </button>
+    <button class="rqcard" id="btnRQ" style="display:none">
+      <div><div class="rqt" id="rqTitle">⚡ 今日の復習 0問</div><div class="rqs">忘れかけた頃に再登場（2分）</div></div>
+      <div class="rqarrow">→</div>
+    </button>
+    <button class="rustchip" id="btnRustSummary" style="display:none">
+      <span id="rustSummaryText">🦠 錆びかけ 0件</span><span>→</span>
+    </button>
+
+    <div class="growhero">
+      <div class="gstage" id="growStage"></div>
+      <div class="gline"><b id="growTitle">工程 1/8：平板</b><div class="gbar"><div id="growBar"></div></div></div>
+    </div>
+
+    <div class="passport">
+      <div class="pt">🛂 FORGE PASSPORT ── 兄弟アプリの進捗が1画面に</div>
+      <div class="pbadges" id="passportBadges"></div>
+      <div class="titleshelf" id="titleShelf"></div>
+      <div class="calibline" id="calibLine">🎯 自信の精度 計測中</div>
+    </div>
+
     <button class="resume" id="btnResume"></button>
     <div class="goalbanner">🎯 ゴール：現場に信頼される板金図面が描ける設計者</div>
     <div class="invmeter">
@@ -246,10 +523,14 @@
     <div class="prog-row"><span id="progText"></span><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><span>クリア</span></div>
     <div class="chap-title">第1章 板金を見る <span>（板金のきそ・全6回＋ボス）</span></div>
     <div class="nodes" id="nodes1"></div>
+    <div class="btnrow2">
+      <button class="bb" id="btnDrillHome">⚔ 判断ドリル<br><small style="font-weight:600">（5問・2分）</small></button>
+      <button class="bb map" id="btnMapHome">🛣 板金街道<br><small style="font-weight:600">マスターマップ</small></button>
+    </div>
     <div class="chap2">🔒 第2章 図面と現場へ（曲げ順序・公差・溶接組立）<br>第1章クリアで解放（次のアップデートで配信）</div>
     <div class="streak" id="streakLine"></div>
     <div class="installhint">スマホ：ブラウザの共有メニュー →「ホーム画面に追加」でアプリになる</div>
-    <div class="verline">BEND FORGE v1.0 ─ 第1章（ARC/FORCE/VOLTの兄弟）</div>
+    <div class="verline">BEND FORGE v2.0 ─ 第1章（ARC/FORCE/VOLT/GEAR/COATの兄弟）</div>
   </section>
 
   <!-- ============ レッスン ============ -->
@@ -275,6 +556,7 @@
       </div>
       <div id="msOpts"></div>
       <div class="mhint">↑ 予想してタップ（外れてもOK。実験で確かめる）</div>
+      <div class="teachhint">🎓 クリア後、新人への一言説明を書く</div>
     </div>
 
     <div id="phExp" style="display:none">
@@ -284,6 +566,7 @@
       <div class="extra" id="extraCtrls"></div>
       <div class="trynote" id="expNote"></div>
       <button class="cta alt" id="btnMicro">🔬 ミクロの目（原子で見る）</button>
+      <button class="cta alt" id="btnPhoto" style="display:none">📷 現場の目</button>
       <button class="cta" id="btnToReveal" disabled>答え合わせ →</button>
     </div>
 
@@ -298,6 +581,10 @@
       <div class="qhead">ミニクイズ ── 1問だけ</div>
       <div class="q" id="qzQ"></div>
       <div id="qzOpts"></div>
+      <div class="confrow" id="qzConf" style="display:none">
+        <button class="confbtn hi" id="qzConfHi">💪 自信あり</button>
+        <button class="confbtn mid" id="qzConfMid">🤔 五分五分</button>
+      </div>
       <div class="expl" id="qzExp" style="display:none"></div>
       <button class="cta" id="btnQuizDone" style="display:none">クリア！ →</button>
     </div>
@@ -306,6 +593,15 @@
       <div class="stamp" id="clearStamp"></div>
       <div class="teaser" id="teaserBox"></div>
       <div class="clearmsg" id="clearMsg"></div>
+      <div class="teachbox">
+        <div class="tlabel">🎓 明日入る新人に、今日のことを1〜2行で説明して</div>
+        <textarea id="teachInputLesson" placeholder="例：曲げの内側Rは板厚以上とる。狭いと割れる。"></textarea>
+        <div class="teachbtnrow">
+          <button class="tsend" id="btnTeachSendLesson">送信（+5XP）</button>
+          <button class="tskip" id="btnTeachSkipLesson">あとで</button>
+        </div>
+        <div class="teachedback" id="teachFbLesson" style="display:none">🎓 保存した。俺の言葉ノートに追加。</div>
+      </div>
       <button class="cta" id="btnGoHome">マップへもどる</button>
     </div>
   </section>
@@ -320,16 +616,164 @@
       <div class="qhead" id="bsProgress"></div>
       <div class="q" id="bsQ"></div>
       <div id="bsOpts"></div>
+      <div class="confrow" id="bsConf" style="display:none">
+        <button class="confbtn hi" id="bsConfHi">💪 自信あり</button>
+        <button class="confbtn mid" id="bsConfMid">🤔 五分五分</button>
+      </div>
       <div class="expl" id="bsExp" style="display:none"></div>
       <button class="cta" id="btnBossNext" style="display:none">つぎ →</button>
     </div>
     <div id="bossResult" class="center" style="display:none">
       <div class="bossscore" id="bsScore"></div>
       <div class="clearmsg" id="bsMsg"></div>
+      <div class="teachbox" id="bossTeachBox" style="display:none">
+        <div class="tlabel">🎓 明日入る新人に、今日のことを1〜2行で説明して</div>
+        <textarea id="teachInputBoss" placeholder="例：曲げは1枚の板を切って折るだけ。だから安い。"></textarea>
+        <div class="teachbtnrow">
+          <button class="tsend" id="btnTeachSendBoss">送信（+5XP）</button>
+          <button class="tskip" id="btnTeachSkipBoss">あとで</button>
+        </div>
+        <div class="teachedback" id="teachFbBoss" style="display:none">🎓 保存した。俺の言葉ノートに追加。</div>
+      </div>
       <button class="cta" id="btnBossHome">マップへもどる</button>
     </div>
   </section>
 
+  <!-- ============ 判断ドリル ============ -->
+  <section id="viewDrill" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBackD">←</button>
+      <span class="tag">⚔ DRILL</span><span>板金設計判断ドリル</span>
+    </div>
+    <div id="drillPlay">
+      <div class="drillcard">
+        <div class="drillhead" id="dqProgress"></div>
+        <div class="drillq" id="dqText"></div>
+        <div class="drilltag" id="dqTag"></div>
+      </div>
+      <div class="okngrow" id="dqOpts">
+        <button id="btnOK">OK</button>
+        <button id="btnNG">NG</button>
+      </div>
+      <div class="confrow" id="dqConf" style="display:none">
+        <button class="confbtn hi" id="dqConfHi">💪 自信あり</button>
+        <button class="confbtn mid" id="dqConfMid">🤔 五分五分</button>
+      </div>
+      <div class="drillexp" id="dqExp" style="display:none"></div>
+      <button class="cta" id="btnDrillNext" style="display:none">つぎ →</button>
+    </div>
+    <div id="drillResult" class="center" style="display:none">
+      <div class="bossscore" id="dResultScore"></div>
+      <div class="drillresultrow" id="dResultRow"></div>
+      <div class="weaklist" id="dWeak"></div>
+      <button class="cta" id="btnDrillResultHome">マップへもどる</button>
+    </div>
+  </section>
+
+  <!-- ============ 復習キュー ============ -->
+  <section id="viewReview" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBackRQ">←</button>
+      <span class="tag">⚡ REVIEW</span><span>今日の復習</span>
+    </div>
+    <div id="reviewPlay">
+      <div class="drillcard">
+        <div class="drillhead" id="rqProgress"></div>
+        <div class="drillq" id="rqText"></div>
+      </div>
+      <div id="rqOpts"></div>
+      <div class="confrow" id="rqConf" style="display:none">
+        <button class="confbtn hi" id="rqConfHi">💪 自信あり</button>
+        <button class="confbtn mid" id="rqConfMid">🤔 五分五分</button>
+      </div>
+      <div class="drillexp" id="rqExp" style="display:none"></div>
+      <button class="cta" id="btnRQNext" style="display:none">つぎ →</button>
+    </div>
+    <div id="reviewResult" class="center" style="display:none">
+      <div class="bossscore" id="rqResultScore"></div>
+      <div class="clearmsg" id="reviewResultMsg">🔥 忘れかけた記憶をしっかり固定した</div>
+      <button class="cta" id="btnRQHome">マップへもどる</button>
+    </div>
+  </section>
+
+  <!-- ============ FORGE DAILY ============ -->
+  <section id="viewDaily" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBackDaily">←</button>
+      <span class="tag">🔥 DAILY</span><span>家族ミックス5問</span>
+    </div>
+    <div id="dailyPlay">
+      <div class="appchip" id="dyAppChip"></div>
+      <div class="drillcard">
+        <div class="drillhead" id="dyProgress"></div>
+        <div class="drillq" id="dyText"></div>
+      </div>
+      <div id="dyOpts"></div>
+      <div class="confrow" id="dyConf" style="display:none">
+        <button class="confbtn hi" id="dyConfHi">💪 自信あり</button>
+        <button class="confbtn mid" id="dyConfMid">🤔 五分五分</button>
+      </div>
+      <div class="drillexp" id="dyExp" style="display:none"></div>
+      <button class="cta" id="btnDailyNext" style="display:none">つぎ →</button>
+    </div>
+    <div id="dailyResult" class="center" style="display:none">
+      <div class="bossscore" id="dyResultScore"></div>
+      <div class="clearmsg">🔥 家族6アプリを交ぜて記憶が固まった（+15XP）</div>
+      <button class="cta" id="btnDailyHome">マップへもどる</button>
+    </div>
+  </section>
+
+  <!-- ============ 板金街道マスターマップ ============ -->
+  <section id="viewMap" style="display:none">
+    <div class="lesson-top">
+      <button class="backbtn" id="btnBackMap">←</button>
+      <span class="tag">🛣 MAP</span><span>板金街道マスターマップ</span>
+    </div>
+    <div class="teaser" style="margin-top:0">原理から始まり、現場に信頼される<b>板金図面</b>が描ける設計者になるまでの道。</div>
+    <div class="btnrow2" style="margin-top:14px"><button class="bb note" id="btnNotebook" style="width:100%">🎓 俺の言葉ノート</button></div>
+    <div class="mapstage" id="mapStage"></div>
+    <div class="mapbros">
+      <div class="mbTitle">別街道（兄弟アプリ）</div>
+      <a class="mapbroslink" href="https://pasarinobuhito0409-droid.github.io/arc-forge/" target="_blank" rel="noopener"><b>ARC FORGE</b> ── 溶接×設計</a>
+      <a class="mapbroslink" href="https://pasarinobuhito0409-droid.github.io/force-forge/" target="_blank" rel="noopener"><b>FORCE FORGE</b> ── 力学×CAE</a>
+      <a class="mapbroslink" href="https://pasarinobuhito0409-droid.github.io/volt-forge/" target="_blank" rel="noopener"><b>VOLT FORGE</b> ── 電気設計</a>
+      <a class="mapbroslink" href="https://pasarinobuhito0409-droid.github.io/gear-forge/" target="_blank" rel="noopener"><b>GEAR FORGE</b> ── 機械設計</a>
+      <a class="mapbroslink" href="https://pasarinobuhito0409-droid.github.io/coat-forge/" target="_blank" rel="noopener"><b>COAT FORGE</b> ── 塗装</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- 📷 現場の目：本物写真モーダル -->
+<div id="photoModal">
+  <div class="pm-sheet">
+    <button id="pmClose" aria-label="閉じる">✕</button>
+    <div id="pmTitle"></div>
+    <div id="pmFig"></div>
+    <div id="pmCap"></div>
+    <a id="pmVideo" class="pm-video" target="_blank" rel="noopener">▶ 動画で見る（ユーチューブ検索へ）</a>
+    <div id="pmCredit"></div>
+  </div>
+</div>
+
+<!-- 🎰 ご褒美ガチャモーダル -->
+<div id="gachaModal">
+  <div class="gc-sheet" id="gcSheet">
+    <div class="gc-roll" id="gcRoll">🎰</div>
+    <div class="gc-tier" id="gcTier"></div>
+    <div class="gc-title" id="gcTitleText"></div>
+    <div class="gc-sub" id="gcSub"></div>
+    <button id="gcClose">とじる</button>
+  </div>
+</div>
+
+<!-- 📖 俺の言葉ノート ・全アプリ横断 -->
+<div id="notebookModal">
+  <div class="nb-sheet">
+    <button id="nbClose" aria-label="閉じる">✕</button>
+    <div class="nb-title">📖 俺の言葉ノート</div>
+    <div id="nbList"></div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -431,6 +875,91 @@
       }
     }
   })(last);
+})();
+
+/* ===== 打刻スプラッシュ「一撃曲げ」（D1・板金オリジナル） =====
+   平板のロゴプレートが横たわる→上からパンチが降りる→一撃でロゴが立体に曲がる
+   （曲げ線が光り、スプリングバックでわずかに戻ってから定着）＋サブタイトル。
+   タップでスキップ／同日2回目は短縮版。 */
+(function splash() {
+  const sp = document.getElementById("splash");
+  if (!sp) return;
+  const cv = document.getElementById("spmist");
+  const ctx = cv ? cv.getContext("2d") : null;
+  function rs() { if (!cv) return; cv.width = Math.max(2, innerWidth); cv.height = Math.max(2, innerHeight); }
+  rs();
+  window.addEventListener("resize", rs);
+
+  const SPLASH_KEY = "bend-forge-splash-day";
+  let already = false;
+  try {
+    const today = new Date().toDateString();
+    already = localStorage.getItem(SPLASH_KEY) === today;
+    localStorage.setItem(SPLASH_KEY, today);
+  } catch (e) {}
+  const SPEED = already ? 1.9 : 1.0;
+  let closed = false, vibed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    sp.classList.add("off");
+    setTimeout(() => { if (sp.parentNode) sp.parentNode.removeChild(sp); }, 480);
+  }
+  sp.addEventListener("pointerdown", close);
+
+  const sparks = [];
+  const plate = document.getElementById("splashPlate");
+  const punch = document.getElementById("splashPunch");
+  const foldline = document.getElementById("foldline");
+  const ssub = document.getElementById("ssub");
+  const sskip = document.getElementById("sskip");
+
+  let t0 = null;
+  function frame(now) {
+    if (closed) return;
+    if (!t0) t0 = now;
+    const t = ((now - t0) / 1000) * SPEED;
+    if (ctx) {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.life -= 0.02;
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+        s.x += s.vx * 0.016; s.y += s.vy * 0.016; s.vy += 260 * 0.016;
+        ctx.fillStyle = "rgba(255,190,110," + Math.max(0, s.life) + ")";
+        ctx.fillRect(s.x, s.y, 2.5, 2.5);
+      }
+    }
+    /* 0.5s: パンチが降下開始 */
+    if (t > 0.5 && punch && !punch.classList.contains("down")) punch.classList.add("down");
+    /* 0.85s: 一撃で曲がる（パンチ接地＝振動＋曲げ線が光る＋火花） */
+    if (t > 0.85 && plate && !plate.classList.contains("bent")) {
+      plate.classList.add("bent");
+      if (foldline) foldline.classList.add("lit");
+      if (!vibed) { vibed = true; vib([18, 10, 30]); }
+      const r = cv ? cv.getBoundingClientRect() : { width: innerWidth, height: innerHeight };
+      const cx = r.width / 2, cy = r.height / 2 - 40;
+      for (let k = 0; k < 18; k++) {
+        sparks.push({ x: cx + (Math.random() - 0.5) * 40, y: cy, vx: (Math.random() - 0.5) * 220, vy: -Math.random() * 160, life: 1 });
+      }
+    }
+    /* 1.15s: パンチが上がる＋スプリングバックでわずかに戻ってから定着 */
+    if (t > 1.15 && punch && punch.classList.contains("down")) {
+      punch.classList.remove("down");
+      punch.classList.add("up");
+    }
+    if (t > 1.3 && plate && plate.classList.contains("bent") && !plate.classList.contains("spring")) {
+      plate.classList.remove("bent");
+      plate.classList.add("spring");
+    }
+    if (t > 1.55) {
+      if (ssub) ssub.classList.add("lit");
+      if (sskip) sskip.classList.add("lit");
+    }
+    if (t < 2.5) requestAnimationFrame(frame);
+    else close();
+  }
+  requestAnimationFrame(frame);
 })();
 
 // ---------------- レッスンデータ ----------------
@@ -592,6 +1121,58 @@ const BOSS = [
     exp: "穴のふちに襟を立てて山3枚以上を確保。" }
 ];
 
+/* ---------------- 判断ドリル（別紙D6・24問全文） ---------------- */
+const DRILLS = [
+  { id: "radius1", tag: "曲げR(radius)", situation: "内R=0（ピン角）を図面指定した。", ans: "NG",
+    reason: "外側の材料が伸びきれず割れる。金型も痛む。", fix: "対策: 内R≧板厚が目安。SUSやアルミ硬材はもっと大きく。" },
+  { id: "radius2", tag: "曲げR(radius)", situation: "曲げ線のすぐ近くに穴を配置した。", ans: "NG",
+    reason: "曲げで穴が引っ張られ楕円に変形する。", fix: "対策: 穴フチ〜曲げまで約2×板厚＋R以上。無理なら曲げ後加工。" },
+  { id: "radius3", tag: "曲げR(radius)", situation: "SPCC（冷間圧延鋼板）を内R＝板厚で曲げた。", ans: "OK",
+    reason: "軟鋼の標準的な安全ライン。", fix: "バネ材・高張力材は別基準。" },
+  { id: "radius4", tag: "曲げR(radius)", situation: "バネ材を金型なりの直角ピッタリで狙った。", ans: "NG",
+    reason: "スプリングバック（弾性の戻り）で開く。", fix: "対策: オーバーベンド（曲げすぎて戻す）か現物合わせ前提の指示。" },
+  { id: "unfold1", tag: "展開(unfold)", situation: "展開長を外寸の単純足し算で出した。", ans: "NG",
+    reason: "曲げ部は伸びる。足し算では長すぎる。", fix: "対策: 曲げ代（ボンドデダクション）を引く。中立軸のズレが正体。" },
+  { id: "unfold2", tag: "展開(unfold)", situation: "CADの板金機能で展開し、K係数（中立軸位置）を現場実績に合わせた。", ans: "OK",
+    reason: "展開精度は係数合わせが9割。", fix: "加工先とV幅・係数を共有すると最強。" },
+  { id: "unfold3", tag: "展開(unfold)", situation: "4辺全部を立ち上げる箱を、曲げ順を考えず設計した。", ans: "NG",
+    reason: "最後の曲げで工具と壁が干渉して曲がらない。", fix: "対策: 頭の中でプレスブレーキに載せて順番に曲げてみる。" },
+  { id: "unfold4", tag: "展開(unfold)", situation: "曲げ線を圧延目（ロール目）と直角になるよう配置した。", ans: "OK",
+    reason: "目に平行な曲げは割れやすい。", fix: "板取り（ネスティング）と両立させる。" },
+  { id: "hole1", tag: "穴と縁(hole)", situation: "曲げ交差部に逃がしの切欠きを入れた。", ans: "OK",
+    reason: "角の破れ・しわの防止定石。", fix: "小さな逃げが仕上がりを大きく変える。" },
+  { id: "hole2", tag: "穴と縁(hole)", situation: "タップ穴を曲げ線のすぐ横に置いた。", ans: "NG",
+    reason: "曲げの歪みでタップが斜め・不良になる。", fix: "対策: 距離を取るか曲げ後にタップ。" },
+  { id: "hole3", tag: "穴と縁(hole)", situation: "板厚1.6に対しφ1.0の丸穴をパンチ抜きで指定した。", ans: "NG",
+    reason: "板厚より小さいパンチは折れる。", fix: "対策: 穴径≧板厚が目安。レーザーなら可の場合も（加工先に確認）。" },
+  { id: "hole4", tag: "穴と縁(hole)", situation: "薄板のねじ止めにバーリング＋タップを使った。", ans: "OK",
+    reason: "立ち上げで山数を稼ぐ板金の知恵。", fix: "M3〜M5でよく使う。下穴径が命。" },
+  { id: "tol1", tag: "公差(tol)", situation: "板金の全寸法に±0.05を指定した。", ans: "NG",
+    reason: "板金の現実は曲げ±0.1〜0.3。全部厳しいと全部高い。", fix: "対策: 効く寸法だけ絞り、他は一般公差。" },
+  { id: "tol2", tag: "公差(tol)", situation: "基準面・基準穴を決めてそこから寸法を追った。", ans: "OK",
+    reason: "基準が揺れると全部揺れる。", fix: "加工も検査も基準で楽になる。" },
+  { id: "tol3", tag: "公差(tol)", situation: "溶接をまたいだ精密寸法を指定した。", ans: "NG",
+    reason: "溶接は熱で歪む。狙えない。", fix: "対策: 溶接後加工にするか、公差を歪み込みで設定。" },
+  { id: "tol4", tag: "公差(tol)", situation: "「どの寸法が機能に効くか」を加工先と共有した。", ans: "OK",
+    reason: "現場は優先順位が分かると強い。", fix: "図面は手紙。読む人を想像。" },
+  { id: "matl1", tag: "材料(matl)", situation: "亜鉛メッキ鋼板の切断端面の防錆を検討した。", ans: "OK",
+    reason: "端面は亜鉛がなく裸の鉄。検討は正しい。", fix: "犠牲防食である程度守られるが、環境次第で塗装・別材を選ぶ。" },
+  { id: "matl2", tag: "材料(matl)", situation: "SUSをSPCCと同じ曲げ条件でプログラムした。", ans: "NG",
+    reason: "SUSはスプリングバック大・必要トン数大。", fix: "対策: 材料ごとの条件表。SUSは戻り込みで曲げる。" },
+  { id: "matl3", tag: "材料(matl)", situation: "板厚を流通標準（1.0/1.2/1.6/2.3/3.2）から選んだ。", ans: "OK",
+    reason: "特殊板厚は納期と価格が跳ねる。", fix: "設計の自由は流通の中で使う。" },
+  { id: "matl4", tag: "材料(matl)", situation: "ヘアライン材（意匠面）を保護フィルム指定なしで手配した。", ans: "NG",
+    reason: "加工中の傷＝即不良。", fix: "対策: フィルム指定＋フィルム剥がしの工程も考える。" },
+  { id: "cost1", tag: "コスト(cost)", situation: "複雑な多曲げ1品物を、曲げ数を減らして溶接組立に割った。", ans: "OK",
+    reason: "曲げ段取りも工数。分けた方が安いことがある。", fix: "数量で最適解が変わる（量産は逆もある）。" },
+  { id: "cost2", tag: "コスト(cost)", situation: "標準金型で曲がらない特殊角度・特殊Rを多用した。", ans: "NG",
+    reason: "特殊金型＝お金と納期。", fix: "対策: 加工先の金型リストの範囲で設計する。" },
+  { id: "cost3", tag: "コスト(cost)", situation: "展開形状の板取り（ネスティング）を意識して歩留まりを上げた。", ans: "OK",
+    reason: "材料費は形で決まる。", fix: "定尺板からの取り数を想像する。" },
+  { id: "cost4", tag: "コスト(cost)", situation: "点付けで十分な内部部品に全周溶接を指定した。", ans: "NG",
+    reason: "歪む・時間かかる・研磨も増える。", fix: "対策: 必要な強度・水密だけ全周。他は点付け・断続。" }
+];
+
 // ---------------- 進捗（localStorage） ----------------
 const STORE_KEY = "bend-forge-v1";
 let progress = { done: {}, streak: { week: "", n: 0 }, broken: 0 };
@@ -626,10 +1207,141 @@ function bumpStreak() {
   s.week = wk;
 }
 
+/* ---------------- 復習キュー（間隔反復・簡略SM-2・v2ペイロード） ---------------- */
+const RQ_KEY = "bend-forge-rq-v1";
+const RQ_INTERVALS = [1, 3, 7, 18, 45, 112]; // 日
+const RQ_DAY_LIMIT = 5;
+let reviewQueue = [];
+try {
+  const raw = localStorage.getItem(RQ_KEY);
+  if (raw) reviewQueue = JSON.parse(raw) || [];
+  if (!Array.isArray(reviewQueue)) reviewQueue = [];
+} catch (e) { reviewQueue = []; }
+function saveRQ() {
+  try { localStorage.setItem(RQ_KEY, JSON.stringify(reviewQueue)); } catch (e) {}
+}
+/* v2ペイロード：問題を自己完結で持つ（DAILY横断の土台） */
+function rqUpsert(id, payload) {
+  const now = Date.now();
+  let item = reviewQueue.find((r) => r.id === id);
+  const base = Object.assign({ id, due: now + 86400000, interval: 1, v: 2, app: "bend" }, payload || {});
+  if (!item) {
+    reviewQueue.push(base);
+  } else {
+    item.due = now + 86400000;
+    item.interval = 1;
+    item.v = 2;
+    item.app = "bend";
+    if (payload) Object.assign(item, payload);
+  }
+  saveRQ();
+}
+/* 自信ベット「💪不正解」用：due=即時・interval=1で最優先登録 */
+function rqUpsertPriority(id, payload) {
+  const now = Date.now();
+  let item = reviewQueue.find((r) => r.id === id);
+  const base = Object.assign({ id, due: now, interval: 1, v: 2, app: "bend" }, payload || {});
+  if (!item) reviewQueue.push(base);
+  else { item.due = now; item.interval = 1; item.v = 2; item.app = "bend"; if (payload) Object.assign(item, payload); }
+  saveRQ();
+}
+function rqAnswer(item, correct) {
+  if (correct) {
+    const idx = RQ_INTERVALS.indexOf(item.interval);
+    const next = idx >= 0 && idx < RQ_INTERVALS.length - 1 ? RQ_INTERVALS[idx + 1] : Math.round((item.interval || 1) * 2.5);
+    item.interval = next;
+  } else {
+    item.interval = 1;
+  }
+  item.due = Date.now() + item.interval * 86400000;
+  saveRQ();
+}
+function rqDueList() {
+  const now = Date.now();
+  return reviewQueue.filter((r) => r.due <= now).slice(0, RQ_DAY_LIMIT);
+}
+
+/* ---------------- ドリル成績 ---------------- */
+const DRILL_STORE_KEY = "bend-forge-drill-v1";
+let drillStats = { seen: {}, wrong: {}, correctCount: 0, totalCount: 0 };
+try {
+  const raw = localStorage.getItem(DRILL_STORE_KEY);
+  if (raw) drillStats = Object.assign(drillStats, JSON.parse(raw));
+} catch (e) {}
+function saveDrillStats() {
+  try { localStorage.setItem(DRILL_STORE_KEY, JSON.stringify(drillStats)); } catch (e) {}
+}
+function pickDrillSet(n) {
+  const unseen = DRILLS.filter((d) => !drillStats.seen[d.id]);
+  const wrongIds = Object.keys(drillStats.wrong).filter((id) => drillStats.wrong[id] > 0);
+  const wrongPool = DRILLS.filter((d) => wrongIds.includes(d.id));
+  const pool = [];
+  const pushUnique = (arr) => { arr.forEach((d) => { if (!pool.find((p) => p.id === d.id)) pool.push(d); }); };
+  pushUnique(shuffleArr(unseen.slice()));
+  pushUnique(shuffleArr(wrongPool.slice()));
+  pushUnique(shuffleArr(DRILLS.slice()));
+  return pool.slice(0, n);
+}
+function shuffleArr(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ---------------- 🛂 FORGE PASSPORT（兄弟5アプリの進捗を1画面に） ---------------- */
+const PASSPORT_APPS = [
+  { key: "arc",   emoji: "⚡", name: "ARC",   store: "arc-forge-v2",   total: 7, url: "https://pasarinobuhito0409-droid.github.io/arc-forge/" },
+  { key: "force", emoji: "🔧", name: "FORCE", store: "force-forge-v1", total: 7, url: "https://pasarinobuhito0409-droid.github.io/force-forge/" },
+  { key: "volt",  emoji: "💡", name: "VOLT",  store: "volt-forge-v1",  total: 7, url: "https://pasarinobuhito0409-droid.github.io/volt-forge/" },
+  { key: "gear",  emoji: "⚙",  name: "GEAR",  store: "gear-forge-v1",  total: 7, url: "https://pasarinobuhito0409-droid.github.io/gear-forge/" },
+  { key: "coat",  emoji: "🎨", name: "COAT",  store: "coat-forge-v1",  total: 7, url: "https://pasarinobuhito0409-droid.github.io/coat-forge/" }
+];
+function passportReadPct(app) {
+  try {
+    const raw = localStorage.getItem(app.store);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    const done = obj && obj.done ? obj.done : null;
+    if (!done || typeof done !== "object") return null;
+    const n = Object.keys(done).filter((k) => done[k]).length;
+    return Math.max(0, Math.min(100, Math.round((n / app.total) * 100)));
+  } catch (e) {
+    return null;
+  }
+}
+function renderPassport() {
+  const wrap = $("passportBadges");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const lvChip = document.createElement("div");
+  lvChip.className = "lvchip";
+  lvChip.innerHTML = '<div class="lvn" id="passportLvN">Lv.1</div><div class="lvl">FORGE</div>';
+  wrap.appendChild(lvChip);
+  PASSPORT_APPS.forEach((app) => {
+    let pct = null;
+    try { pct = passportReadPct(app); } catch (e) { pct = null; }
+    const a = document.createElement("a");
+    a.className = "pbadge";
+    a.href = app.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    const pctText = pct === null ? "—" : pct + "%";
+    a.innerHTML =
+      '<div class="pbemoji">' + app.emoji + '</div>' +
+      '<div class="pbname">' + app.name + '</div>' +
+      '<div class="pbpct">' + pctText + '</div>' +
+      '<div class="pbbar"><div style="width:' + (pct || 0) + '%"></div></div>';
+    wrap.appendChild(a);
+  });
+  renderXPBar();
+}
+
 // ---------------- 画面切りかえ ----------------
 const $ = (id) => document.getElementById(id);
 function showView(name) {
-  ["viewHome", "viewLesson", "viewBoss"].forEach((v) => { $(v).style.display = v === name ? "block" : "none"; });
+  ["viewHome", "viewLesson", "viewBoss", "viewDrill", "viewReview", "viewDaily", "viewMap"].forEach((v) => { $(v).style.display = v === name ? "block" : "none"; });
   window.scrollTo(0, 0);
 }
 function setPhase(name) {
@@ -641,7 +1353,341 @@ function setPhase(name) {
   if (ST && !ST.fake) requestAnimationFrame(() => ST.resize());
   window.scrollTo(0, 0);
 }
-function vib(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+function vib(p) {
+  try {
+    if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.isActive)) navigator.vibrate(p);
+  } catch (e) {}
+}
+
+/* ================================================================
+   BEND FORGE v2 ── 共有装備（FORGE_V2.md §2〜§4準拠）
+   全アプリ共通キー：同一オリジン（pasarinobuhito0409-droid.github.io）
+   なのでlocalStorageは兄弟アプリと共有される。JSON.parseは必ずtry/catch。
+================================================================ */
+
+/* ---- ⚡ 共有XP・レベル ---- */
+const XP_KEY = "forge-xp-v1";
+function loadXP() {
+  try {
+    const raw = localStorage.getItem(XP_KEY);
+    const o = raw ? JSON.parse(raw) : null;
+    return { xp: (o && typeof o.xp === "number" && isFinite(o.xp)) ? o.xp : 0 };
+  } catch (e) { return { xp: 0 }; }
+}
+function addXP(n) {
+  try {
+    const x = loadXP();
+    x.xp = Math.max(0, (x.xp || 0) + (n || 0));
+    localStorage.setItem(XP_KEY, JSON.stringify(x));
+    renderXPBar();
+    return x.xp;
+  } catch (e) { return 0; }
+}
+function levelOf(xp) { return 1 + Math.floor(Math.max(0, xp) / 120); }
+function renderXPBar() {
+  const xp = loadXP().xp;
+  const lv = levelOf(xp);
+  const inLv = xp - (lv - 1) * 120;
+  const el = $("xpLvText"), bar = $("xpBarFill");
+  if (el) el.textContent = "⚡FORGE Lv." + lv;
+  if (bar) bar.style.width = Math.max(0, Math.min(100, Math.round((inLv / 120) * 100))) + "%";
+  const lvn = $("passportLvN");
+  if (lvn) lvn.textContent = "Lv." + lv;
+}
+
+/* ---- 🎓 教える（俺の言葉ノート） ---- */
+const TEACH_KEY = "forge-teach-v1";
+function teachSave(app, lessonId, txt) {
+  try {
+    const raw = localStorage.getItem(TEACH_KEY);
+    let arr = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(arr)) arr = [];
+    arr.push({ app, lesson: lessonId, txt: String(txt || "").slice(0, 300), ts: Date.now() });
+    if (arr.length > 200) arr = arr.slice(arr.length - 200);
+    localStorage.setItem(TEACH_KEY, JSON.stringify(arr));
+  } catch (e) {}
+}
+function teachAllNotes() {
+  try {
+    const raw = localStorage.getItem(TEACH_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.slice().sort((a, b) => (b.ts || 0) - (a.ts || 0)) : [];
+  } catch (e) { return []; }
+}
+function teachFindFor(app, lessonId) {
+  const notes = teachAllNotes().filter((n) => n.app === app && n.lesson === lessonId);
+  return notes.length ? notes[0] : null;
+}
+const APP_EMOJI = { arc: "⚡", force: "🔧", volt: "💡", bend: "📐", gear: "⚙", coat: "🎨" };
+const APP_NAME = { arc: "ARC", force: "FORCE", volt: "VOLT", bend: "BEND", gear: "GEAR", coat: "COAT" };
+const APP_LESSON_LABEL = { bend: {} };
+LESSONS.forEach((L) => { APP_LESSON_LABEL.bend[L.id] = L.tag + " " + L.title; });
+APP_LESSON_LABEL.bend.l7 = "L7 章ボス戦";
+
+/* ---- 🎯 自信ベット（メタ認知較正） ---- */
+const CONF_KEY = "forge-conf-v1";
+function calibRecord(hit) {
+  try {
+    const raw = localStorage.getItem(CONF_KEY);
+    let o = raw ? JSON.parse(raw) : null;
+    if (!o || !Array.isArray(o.hits)) o = { hits: [] };
+    o.hits.push(hit ? 1 : 0);
+    if (o.hits.length > 40) o.hits = o.hits.slice(o.hits.length - 40);
+    localStorage.setItem(CONF_KEY, JSON.stringify(o));
+  } catch (e) {}
+}
+function calibPct() {
+  try {
+    const raw = localStorage.getItem(CONF_KEY);
+    const o = raw ? JSON.parse(raw) : null;
+    const h = (o && Array.isArray(o.hits)) ? o.hits : [];
+    if (h.length < 10) return null;
+    const sum = h.reduce((a, b) => a + b, 0);
+    return Math.round((sum / h.length) * 100);
+  } catch (e) { return null; }
+}
+function renderCalibLine() {
+  const el = $("calibLine");
+  if (!el) return;
+  const pct = calibPct();
+  el.textContent = pct === null ? "🎯 自信の精度 計測中" : "🎯 自信の精度 " + pct + "%";
+}
+
+/* 共通「自信ベット→採点」ゲート。全設問UI（クイズ/ボス/ドリル/RQ/DAILY）から呼ぶ。
+   opts: { confRowId, hiId, midId, onResolved(conf) }
+   呼び出し側は選択肢タップ時に即採点せず、まずこの関数で自信チップを出す。
+   conf確定後に onResolved(conf) を呼び、そこで初めて正誤演出とXP加算を行う。 */
+function askConfidence(confRowId, hiId, midId, onResolved) {
+  const row = $(confRowId);
+  if (!row) { onResolved("mid"); return; }
+  row.style.display = "flex";
+  const hi = $(hiId), mid = $(midId);
+  function done(conf) {
+    row.style.display = "none";
+    hi.onclick = null; mid.onclick = null;
+    onResolved(conf);
+  }
+  hi.onclick = () => done("hi");
+  mid.onclick = () => done("mid");
+}
+/* 自信×正誤のXP配点。correctならスコア加点も呼び出し側で行う。 */
+function confidenceXP(conf, correct) {
+  if (conf === "hi") return correct ? 3 : 0;
+  return correct ? 2 : 1;
+}
+
+/* ---- 🦠 サビマップ（忘却の可視化） ---- */
+const FRESH_KEY = "bend-forge-fresh-v1";
+function freshTouch(lessonId) {
+  if (!lessonId) return;
+  try {
+    const raw = localStorage.getItem(FRESH_KEY);
+    let o = raw ? JSON.parse(raw) : null;
+    if (!o || typeof o !== "object") o = {};
+    o[lessonId] = Date.now();
+    localStorage.setItem(FRESH_KEY, JSON.stringify(o));
+  } catch (e) {}
+}
+function freshMap() {
+  try {
+    const raw = localStorage.getItem(FRESH_KEY);
+    const o = raw ? JSON.parse(raw) : null;
+    return (o && typeof o === "object") ? o : {};
+  } catch (e) { return {}; }
+}
+function rustClassOf(lessonId, isDone) {
+  if (!isDone) return "";
+  const m = freshMap();
+  const ts = m[lessonId];
+  if (!ts) return "";
+  const days = (Date.now() - ts) / 86400000;
+  if (days < 3) return "fresh";
+  if (days < 10) return "";
+  if (days < 21) return "dull";
+  if (days < 45) return "rust1";
+  return "rust2";
+}
+/* ドリルtag→レッスン対応表（サビ更新用・BEND独自の判断。報告書に明記） */
+const DRILL_TAG_LESSON = { radius: "l2", unfold: "l3", hole: "l5", tol: "l4", matl: "l4", cost: "l1" };
+
+/* ---- 🔀 FORGE DAILY（家族ミックス5問） ---- */
+const DAILY_KEY = "forge-daily-v1";
+const DAILY_SIBLINGS = [
+  { key: "arc-forge-rq-v1", app: "arc" },
+  { key: "force-forge-rq-v1", app: "force" },
+  { key: "volt-forge-rq-v1", app: "volt" },
+  { key: "gear-forge-rq-v1", app: "gear" },
+  { key: "coat-forge-rq-v1", app: "coat" },
+  { key: "bend-forge-rq-v1", app: "bend" }
+];
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function dailyDoneToday() {
+  try {
+    const raw = localStorage.getItem(DAILY_KEY);
+    const o = raw ? JSON.parse(raw) : null;
+    return !!(o && o.date === todayStr());
+  } catch (e) { return false; }
+}
+function dailyMarkDone(n) {
+  try { localStorage.setItem(DAILY_KEY, JSON.stringify({ date: todayStr(), doneCount: n })); } catch (e) {}
+}
+/* 兄弟アプリのRQ v2エントリを集めて①超過日数降順②アプリラウンドロビンで最大5問選出 */
+function dailyBuildSet() {
+  const now = Date.now();
+  const perApp = {};
+  DAILY_SIBLINGS.forEach((s) => {
+    let arr = [];
+    try {
+      const raw = localStorage.getItem(s.key);
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(parsed)) arr = parsed;
+    } catch (e) { arr = []; }
+    const due = arr.filter((it) => it && it.v === 2 && typeof it.due === "number" && it.due <= now && it.q && Array.isArray(it.opts));
+    due.sort((a, b) => a.due - b.due); /* 古いdue＝超過日数が大きい順 */
+    perApp[s.app] = due.map((it) => ({ item: it, app: s.app, key: s.key }));
+  });
+  const pool = [];
+  for (const s of DAILY_SIBLINGS) pool.push(...perApp[s.app]);
+  if (pool.length < 2) return [];
+  /* ラウンドロビン：各アプリの先頭から順番に取る */
+  const picked = [];
+  let more = true;
+  while (picked.length < 5 && more) {
+    more = false;
+    for (const s of DAILY_SIBLINGS) {
+      const q = perApp[s.app];
+      if (q && q.length) { picked.push(q.shift()); more = true; }
+      if (picked.length >= 5) break;
+    }
+  }
+  return picked;
+}
+/* 正解/不正解を持ち主アプリのキーへ書き戻す（due/intervalのみ変更。壊れたJSONは黙ってスキップ） */
+function dailyWriteBack(entry, correct) {
+  try {
+    const raw = localStorage.getItem(entry.key);
+    let arr = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(arr)) return;
+    const it = arr.find((x) => x && x.id === entry.item.id);
+    if (!it) return;
+    if (correct) {
+      const idx = RQ_INTERVALS.indexOf(it.interval);
+      it.interval = idx >= 0 && idx < RQ_INTERVALS.length - 1 ? RQ_INTERVALS[idx + 1] : Math.round((it.interval || 1) * 2.5);
+    } else {
+      it.interval = 1;
+    }
+    it.due = Date.now() + it.interval * 86400000;
+    localStorage.setItem(entry.key, JSON.stringify(arr));
+  } catch (e) {}
+}
+
+/* ---- 🎰 ご褒美ガチャ＋称号 ---- */
+const TITLES_KEY = "forge-titles-v1";
+const BEND_TITLE_LADDER = [
+  { id: "bend-basic", name: "曲げの見習い", tier: "normal", emoji: "🔩" },
+  { id: "bend-rare", name: "展開の魔術師", tier: "rare", emoji: "🥈" },
+  { id: "bend-epic", name: "プレスの王", tier: "epic", emoji: "👑" }
+];
+const GENERIC_RARE_TITLES = ["朝の鍛冶屋", "コツコツの鬼", "サビ落とし職人", "図面の虫", "現場の目利き"];
+function titlesAll() {
+  try {
+    const raw = localStorage.getItem(TITLES_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+function titleGrant(id, name) {
+  try {
+    const arr = titlesAll();
+    arr.push({ id, name, app: "bend", ts: Date.now() });
+    localStorage.setItem(TITLES_KEY, JSON.stringify(arr));
+  } catch (e) {}
+}
+function titleHas(id) { return titlesAll().some((t) => t.id === id); }
+let bossEverPassed = false;
+try { bossEverPassed = !!(JSON.parse(localStorage.getItem(STORE_KEY) || "{}").done || {}).l7; } catch (e) {}
+/* 抽選：通常80%/レア16%/超レア4%（ボスはmul=2で32%/8%） */
+function gachaRoll(mul) {
+  mul = mul || 1;
+  const r = Math.random();
+  const epicP = 0.04 * mul, rareP = 0.16 * mul;
+  if (r < epicP) return "epic";
+  if (r < epicP + rareP) return "rare";
+  return "normal";
+}
+function spinGacha(mul, forceFirstBoss) {
+  vib([12, 20, 12]);
+  let tier = gachaRoll(mul);
+  let titleName = "", titleId = "";
+  if (forceFirstBoss && !titleHas("bend-basic")) {
+    tier = tier === "normal" ? "normal" : tier; /* 初回保証は基本称号だが等級演出はロール結果を尊重 */
+    titleId = "bend-basic"; titleName = BEND_TITLE_LADDER[0].name;
+    titleGrant(titleId, titleName);
+  } else if (tier === "epic") {
+    titleId = "bend-epic"; titleName = BEND_TITLE_LADDER[2].name;
+    titleGrant(titleId, titleName);
+  } else if (tier === "rare") {
+    const pick = GENERIC_RARE_TITLES[(Math.random() * GENERIC_RARE_TITLES.length) | 0];
+    titleId = "gen-" + pick; titleName = pick;
+    titleGrant(titleId, titleName);
+  }
+  openGachaModal(tier, titleName);
+}
+function openGachaModal(tier, titleName) {
+  const modal = $("gachaModal");
+  const sheet = $("gcSheet");
+  sheet.className = "gc-sheet";
+  $("gcRoll").textContent = "🎰";
+  $("gcRoll").style.display = "block";
+  const tierEl = $("gcTier"), nameEl = $("gcTitleText"), subEl = $("gcSub");
+  tierEl.className = "gc-tier";
+  const plateOld = sheet.querySelector(".gc-plate");
+  if (plateOld) plateOld.remove();
+  if (tier === "epic") {
+    tierEl.classList.add("epic");
+    tierEl.textContent = "★★★ 超レア ★★★";
+    nameEl.textContent = titleName ? "称号「" + titleName + "」獲得！" : "プレスの一撃！";
+    subEl.textContent = "金の平板が一撃で箱に折り上がった✨";
+    const plate = document.createElement("div");
+    plate.className = "gc-plate";
+    sheet.insertBefore(plate, tierEl);
+    vib([20, 30, 20, 30, 60]);
+  } else if (tier === "rare") {
+    tierEl.classList.add("rare");
+    tierEl.textContent = "★★ レア ★★";
+    nameEl.textContent = titleName ? "称号「" + titleName + "」獲得！" : "銀の輝き！";
+    subEl.textContent = "いつもよりちょっと良いことが起きた";
+  } else {
+    tierEl.classList.add("normal");
+    tierEl.textContent = "いつものスタンプ";
+    nameEl.textContent = "CLEAR!";
+    subEl.textContent = titleName ? "称号「" + titleName + "」獲得！" : "また明日もこの調子で";
+  }
+  modal.style.display = "flex";
+}
+$("gcClose").addEventListener("click", () => { $("gachaModal").style.display = "none"; renderTitleShelf(); });
+function renderTitleShelf() {
+  const wrap = $("titleShelf");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const genCount = titlesAll().filter((t) => t.app === "bend" && String(t.id).indexOf("gen-") === 0).length;
+  BEND_TITLE_LADDER.forEach((t) => {
+    const has = titleHas(t.id);
+    const d = document.createElement("div");
+    d.className = "titlebadge" + (has ? "" : " locked");
+    d.innerHTML = '<span class="temoji">' + (has ? t.emoji : "❔") + "</span>" + (has ? t.name : "？？？");
+    wrap.appendChild(d);
+  });
+  if (genCount > 0) {
+    const d = document.createElement("div");
+    d.className = "titlebadge";
+    d.innerHTML = '<span class="temoji">🌟</span>汎用称号 ×' + genCount;
+    wrap.appendChild(d);
+  }
+}
 
 // ---------------- ホーム描画 ----------------
 function lessonState(i) {
@@ -659,11 +1705,23 @@ function renderHome() {
   const labels = LESSONS.map((L) => L.label).concat(["ボス"]);
   for (let i = 0; i < labels.length; i++) {
     const st = lessonState(i);
+    const id = i < LESSONS.length ? LESSONS[i].id : "l7";
+    const rustCls = st === "done" ? rustClassOf(id, true) : "";
     const b = document.createElement("button");
-    b.className = "node " + st;
+    b.className = "node " + st + (rustCls ? " " + rustCls : "");
+    b.style.position = "relative";
     const face = i < LESSONS.length ? LESSONS[i].tag.replace("L", "") : "★";
-    b.innerHTML = '<div class="dot">' + (st === "done" ? "✓" : face) + '</div><div class="lbl">' + labels[i] + "</div>";
-    if (st !== "lock") b.addEventListener("click", () => (i < LESSONS.length ? openLesson(i) : openBoss()));
+    const jr = window.__justRepainted;
+    const showRepaintFX = jr && jr.id === id && (Date.now() - jr.ts) < 3000;
+    b.innerHTML = '<div class="dot">' + (st === "done" ? "✓" : face) + '</div><div class="lbl">' + labels[i] + (rustCls === "rust2" ? "🦠" : "") + "</div>" +
+      (showRepaintFX ? '<div class="repaintfx go"></div>' : "");
+    if (st !== "lock") {
+      if (st === "done" && (rustCls === "rust1" || rustCls === "rust2")) {
+        b.addEventListener("click", () => openRepaint(id));
+      } else {
+        b.addEventListener("click", () => (i < LESSONS.length ? openLesson(i) : openBoss()));
+      }
+    }
     wrap.appendChild(b);
   }
   const count = PROG_KEYS.filter((k) => progress.done[k]).length;
@@ -690,6 +1748,50 @@ function renderHome() {
   }
   const s = progress.streak;
   $("streakLine").textContent = (s.n > 0 ? "🔥 " + s.n + "週れんぞく" : "🔥 今週から積み上げ開始") + "／曲げた板 " + (progress.broken || 0) + "枚";
+
+  /* 復習キューカード */
+  const due = rqDueList();
+  const rqBtn = $("btnRQ");
+  if (due.length > 0) {
+    rqBtn.style.display = "flex";
+    $("rqTitle").textContent = "⚡ 今日の復習 " + due.length + "問";
+    rqBtn.onclick = openReview;
+  } else {
+    rqBtn.style.display = "none";
+  }
+
+  /* 🔥FORGE DAILY（未完走かつ2問以上のときだけ表示） */
+  const dailyBtn = $("btnDaily");
+  if (!dailyDoneToday()) {
+    const pool = dailyBuildSet();
+    if (pool.length >= 2) {
+      dailyBtn.style.display = "flex";
+      $("dailyTitle").textContent = "🔥 FORGE DAILY ── 家族ミックス" + pool.length + "問";
+      dailyBtn.onclick = openDaily;
+    } else {
+      dailyBtn.style.display = "none";
+    }
+  } else {
+    dailyBtn.style.display = "none";
+  }
+
+  /* 🦠錆サマリー */
+  const fm = freshMap();
+  let rustN = 0;
+  PROG_KEYS.forEach((id) => { if (progress.done[id]) { const c = rustClassOf(id, true); if (c === "rust1" || c === "rust2") rustN++; } });
+  const rustBtn = $("btnRustSummary");
+  if (rustN > 0) {
+    rustBtn.style.display = "flex";
+    $("rustSummaryText").textContent = "🦠 錆びかけ " + rustN + "件";
+    rustBtn.onclick = () => { renderMap(); showView("viewMap"); };
+  } else {
+    rustBtn.style.display = "none";
+  }
+
+  renderGrowHero(count);
+  renderPassport();
+  renderCalibLine();
+  renderTitleShelf();
 }
 
 /* ================================================================
@@ -740,6 +1842,207 @@ function tableTexOf() {
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
   tex.repeat.set(2, 1.5);
   return tex;
+}
+
+/* ================================================================
+   ★育つ曲げ製品（ホームヒーロー・D2・本物Three.js・ドラッグ回転）
+   クリア数0〜7で8工程が進む：平板→ケガキ線→レーザー切断（外形・穴）→
+   曲げ1（1辺立つ）→曲げ2（コの字）→バーリング・タップ穴→点付け溶接で
+   箱化→全クリ＝完成箱が回転台でターン＋次の平板が流れてくる製造ループ。
+   ST（レッスン用ステージ）とは独立した専用レンダラー・専用マテリアル。
+================================================================ */
+const HERO_STATES = [
+  { name: "平板",                       scribe: 0, holes: 0, flapL: 0, flapR: 0, flapF: 0, flapB: 0, collar: 0, weld: 0 },
+  { name: "ケガキ線（罫書き）",          scribe: 1, holes: 0, flapL: 0, flapR: 0, flapF: 0, flapB: 0, collar: 0, weld: 0 },
+  { name: "レーザー切断（外形・穴）",    scribe: 1, holes: 1, flapL: 0, flapR: 0, flapF: 0, flapB: 0, collar: 0, weld: 0 },
+  { name: "曲げ1（1辺立つ）",            scribe: 1, holes: 1, flapL: 1, flapR: 0, flapF: 0, flapB: 0, collar: 0, weld: 0 },
+  { name: "曲げ2（コの字）",             scribe: 1, holes: 1, flapL: 1, flapR: 1, flapF: 0, flapB: 0, collar: 0, weld: 0 },
+  { name: "バーリング・タップ穴",        scribe: 1, holes: 1, flapL: 1, flapR: 1, flapF: 0, flapB: 0, collar: 1, weld: 0 },
+  { name: "点付け溶接で箱化",            scribe: 1, holes: 1, flapL: 1, flapR: 1, flapF: 1, flapB: 1, collar: 1, weld: 1 },
+  { name: "完成✨（製造ループ）",         scribe: 1, holes: 1, flapL: 1, flapR: 1, flapF: 1, flapB: 1, collar: 1, weld: 1, done: true }
+];
+let GH = null;
+function growStateFor(cleared) { return Math.max(0, Math.min(7, cleared | 0)); }
+function ensureGrowHero() {
+  if (GH) return GH;
+  const host = $("growStage");
+  if (!host) return null;
+  if (typeof THREE === "undefined") {
+    host.insertAdjacentHTML("beforeend", '<div class="gfallback">3D表示にはネット接続が必要です<br>（工程 1/8）</div>');
+    GH = { fake: true };
+    return GH;
+  }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); }
+  catch (e) {
+    host.insertAdjacentHTML("beforeend", '<div class="gfallback">3D表示ができません</div>');
+    GH = { fake: true };
+    return GH;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 3));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  const w0 = Math.max(1, host.clientWidth), h0 = Math.max(1, host.clientHeight);
+  renderer.setSize(w0, h0);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  host.insertBefore(renderer.domElement, host.firstChild);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, w0 / h0, 0.1, 60);
+  camera.position.set(0.5, 0.7, 4.3);
+  camera.lookAt(0, -0.05, 0);
+  scene.add(new THREE.HemisphereLight(0xbfd0e0, 0x201812, 0.45));
+  const key = new THREE.DirectionalLight(0xfff4e6, 1.0);
+  key.position.set(2.6, 4, 2.4);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  scene.add(key);
+  const rimA = new THREE.PointLight(0x4fd1ff, 0.7, 14); rimA.position.set(-3, 1.4, -2); scene.add(rimA);
+  const rimB = new THREE.PointLight(0xff9d4d, 0.5, 14); rimB.position.set(3, 0.8, -2.4); scene.add(rimB);
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const heroSteelMat = (extra) => new THREE.MeshStandardMaterial(Object.assign({ color: 0xb8c2cc, metalness: 0.82, roughness: 0.4 }, extra || {}));
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 2.05, 0.12, 28), heroSteelMat({ color: 0x1c2836 }));
+  floor.position.y = -0.85;
+  floor.receiveShadow = true;
+  group.add(floor);
+
+  const PW = 1.0, PD = 0.7, PT = 0.05;
+  const plateMat = heroSteelMat({});
+  const centerPlate = new THREE.Mesh(new THREE.BoxGeometry(PW, PT, PD), plateMat);
+  centerPlate.position.y = -0.06;
+  centerPlate.castShadow = true;
+  centerPlate.scale.set(0.001, 0.001, 0.001);
+  group.add(centerPlate);
+
+  const scribeLine = new THREE.Mesh(new THREE.BoxGeometry(PW * 0.94, 0.005, 0.012), new THREE.MeshStandardMaterial({ color: 0xffd64f, emissive: 0xffd64f, emissiveIntensity: 0.9, transparent: true, opacity: 0 }));
+  scribeLine.position.set(0, -0.06 + PT / 2 + 0.004, 0);
+  group.add(scribeLine);
+
+  const holeMat = new THREE.MeshStandardMaterial({ color: 0x05070a, transparent: true, opacity: 0 });
+  const hole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.03, 16), holeMat);
+  hole1.position.set(-PW * 0.28, -0.06, PD * 0.22);
+  const hole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.03, 16), holeMat.clone());
+  hole2.position.set(-PW * 0.28, -0.06, -PD * 0.22);
+  group.add(hole1); group.add(hole2);
+
+  /* 4フラップ（左右前後）：辺で折れて箱になる（CARD_SCENES l1の折り紙パターンを踏襲） */
+  function makeFlap(dx, dz) {
+    const g = new THREE.Group();
+    const w = dx !== 0 ? PD * 0.55 : PW;
+    const d = dz !== 0 ? PD * 0.55 : PD;
+    const m = new THREE.Mesh(new THREE.BoxGeometry(dx !== 0 ? PD * 0.55 : PW, PT, dz !== 0 ? PD * 0.55 : PD), plateMat);
+    m.position.set(dx !== 0 ? dx * PD * 0.275 : 0, 0, dz !== 0 ? dz * PD * 0.275 : 0);
+    m.castShadow = true;
+    g.add(m);
+    g.position.set(dx !== 0 ? dx * PW * 0.5 : 0, -0.06, dz !== 0 ? dz * PD * 0.5 : 0);
+    group.add(g);
+    return g;
+  }
+  const flapL = makeFlap(-1, 0), flapR = makeFlap(1, 0), flapF = makeFlap(0, 1), flapB = makeFlap(0, -1);
+
+  /* バーリング襟＋タップ山（L6の意匠を継承したミニ版） */
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.085, 0.13, 18, 1, true), new THREE.MeshStandardMaterial({ color: 0xb8c2cc, metalness: 0.8, roughness: 0.35, side: THREE.DoubleSide, transparent: true, opacity: 0 }));
+  collar.position.set(PW * 0.22, -0.05, -PD * 0.22);
+  group.add(collar);
+  const threadMat = new THREE.MeshStandardMaterial({ color: 0x7fe0ff, emissive: 0x2ea8ff, emissiveIntensity: 0.6, transparent: true, opacity: 0 });
+  const threads = [0, 1, 2].map((i) => {
+    const th = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.008, 8, 20), threadMat.clone());
+    th.rotation.x = Math.PI / 2;
+    th.position.set(PW * 0.22, -0.1 + i * 0.03, -PD * 0.22);
+    group.add(th);
+    return th;
+  });
+
+  /* 溶接点（角のなじみ・4点・箱化で点灯） */
+  const weldMat = new THREE.MeshStandardMaterial({ color: 0xfff0c8, emissive: 0xffb648, emissiveIntensity: 0, transparent: true, opacity: 0 });
+  const weldPts = [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([sx, sz]) => {
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 8), weldMat.clone());
+    s.position.set(sx * PW * 0.48, 0.05, sz * PD * 0.48);
+    group.add(s);
+    return s;
+  });
+
+  /* 全クリ演出：新しい平板が横から流れてくる製造ループ */
+  const conveyor = new THREE.Mesh(new THREE.BoxGeometry(PW, PT, PD), heroSteelMat({}));
+  conveyor.visible = false;
+  group.add(conveyor);
+
+  let vel = 0, dragging = false, px = 0, autoY = -0.4;
+  const el = renderer.domElement;
+  el.style.cursor = "grab";
+  el.addEventListener("pointerdown", (e) => { dragging = true; px = e.clientX; el.style.cursor = "grabbing"; try { el.setPointerCapture(e.pointerId); } catch (er) {} });
+  el.addEventListener("pointermove", (e) => { if (!dragging) return; vel += (e.clientX - px) * 0.01; px = e.clientX; });
+  el.addEventListener("pointerup", () => { dragging = false; el.style.cursor = "grab"; vib(8); });
+  window.addEventListener("resize", () => {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  });
+
+  let cur2 = { scribe: 0, holes: 0, flapL: 0, flapR: 0, flapF: 0, flapB: 0, collar: 0, weld: 0 };
+  let curState = 0, tAll = 0, lastT = performance.now();
+  function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    vel *= 0.94;
+    autoY += vel * dt * 0.6 + dt * 0.06;
+    group.rotation.y = autoY;
+    if (centerPlate.scale.x < 1) { const s = Math.min(1, centerPlate.scale.x + dt * 2.2); centerPlate.scale.set(s, s, s); }
+
+    const target = HERO_STATES[curState];
+    ["scribe", "holes", "flapL", "flapR", "flapF", "flapB", "collar", "weld"].forEach((k) => { cur2[k] += (target[k] - cur2[k]) * 0.06; });
+    scribeLine.material.opacity = cur2.scribe * 0.9;
+    hole1.material.opacity = cur2.holes; hole2.material.opacity = cur2.holes;
+    flapL.rotation.z = -cur2.flapL * Math.PI / 2;
+    flapR.rotation.z = cur2.flapR * Math.PI / 2;
+    flapF.rotation.x = cur2.flapF * Math.PI / 2;
+    flapB.rotation.x = -cur2.flapB * Math.PI / 2;
+    collar.material.opacity = cur2.collar * 0.9;
+    collar.scale.y = Math.max(0.02, cur2.collar);
+    threads.forEach((th) => { th.material.opacity = cur2.collar * 0.85; });
+    weldPts.forEach((s) => {
+      s.material.opacity = cur2.weld * 0.95;
+      s.material.emissiveIntensity = cur2.weld * (0.6 + Math.sin(now * 0.006) * 0.3);
+    });
+
+    if (GH.allDone) {
+      tAll += dt;
+      const cyc = tAll % 4.2;
+      if (cyc < 0.2) { conveyor.visible = false; }
+      if (cyc > 0.3 && cyc < 3.2) {
+        conveyor.visible = true;
+        const k = (cyc - 0.3) / 2.9;
+        conveyor.position.set(-1.6 + k * 1.5, -0.06 - PT / 2, 0.9 - k * 0.9);
+        conveyor.material.opacity = 1;
+      } else {
+        conveyor.visible = false;
+      }
+      rimA.intensity = 0.7 + Math.sin(tAll * 1.6) * 0.35;
+    } else {
+      conveyor.visible = false;
+    }
+    const w = host.clientWidth, h = host.clientHeight;
+    if (w > 0 && h > 0 && isFinite(group.rotation.y)) renderer.render(scene, camera);
+  }
+  GH = { fake: false, allDone: false, setState(n) { curState = growStateFor(n); } };
+  requestAnimationFrame(loop);
+  return GH;
+}
+function renderGrowHero(cleared) {
+  const n = growStateFor(cleared);
+  const st = HERO_STATES[n];
+  const titleEl = $("growTitle"), barEl = $("growBar");
+  if (titleEl) titleEl.innerHTML = "工程 " + (n + 1) + "/8：" + st.name;
+  if (barEl) barEl.style.width = Math.round(((n + 1) / 8) * 100) + "%";
+  const gh = ensureGrowHero();
+  if (!gh || gh.fake) return;
+  gh.allDone = cleared >= 7;
+  gh.setState(cleared);
 }
 
 function ensureStage() {
@@ -2103,6 +3406,7 @@ function startExp() {
   setExtraHTML("");
   $("loadRange").value = 0;
   $("loadVal").textContent = cur.val(0);
+  $("btnPhoto").style.display = PHOTOS[cur.id] ? "" : "none";
   const btn = $("btnToReveal");
   btn.disabled = true;
   microOn = false;
@@ -2115,6 +3419,63 @@ function startExp() {
   ST.resize();
 }
 $("btnMicro").addEventListener("click", () => setMicro(!microOn));
+
+/* ================================================================
+   📷 現場の目（D5）：本物の写真＋動くラベル＋動画リンク。
+   写真はウィキメディア・コモンズの自由ライセンス素材（クレジット表示義務）
+================================================================ */
+const PHOTOS = {
+  l1: { img: "assets/photo/b2.jpg", title: "実物の曲げプレス",
+    cap: "プレスブレーキ。人が板を支えて位置決めし、上型が降りて曲げる。曲げ順を考えるのは設計の仕事。",
+    points: [{ x: 50, y: 40, t: "バックゲージ＝位置決めの基準" }],
+    credit: "写真: Wolfgang Feld（CC BY-SA 2.0 de／Wikimedia Commons）", vq: "プレスブレーキ 曲げ加工 現場" },
+  l2: { img: "assets/photo/b1.jpg", title: "パンチとV溝ダイ",
+    cap: "曲げ金型の実物。上のパンチ先端Rが製品の内Rを作り、下のV溝幅で必要トン数と最小フランジ寸法が決まる。",
+    points: [{ x: 60, y: 25, t: "パンチ先端R＝内Rを作る" }, { x: 75, y: 85, t: "V溝ダイ" }],
+    credit: "写真: Contour（CC0／Wikimedia Commons）", vq: "プレスブレーキ 金型 V幅" },
+  l4: { img: "assets/photo/b3.jpg", title: "平板から部品へ",
+    cap: "切る→曲げる→仕上げる。すべての始まりは1枚の展開図。展開が違えば全部が違う。",
+    points: [{ x: 50, y: 45, t: "平板→立体への途中" }],
+    credit: "写真: Brittany Bateman（Public domain／Wikimedia Commons）", vq: "板金加工 工程 展開" },
+  l6: { img: "assets/photo/b4.jpg", title: "仕上げの現場",
+    cap: "バリ・傷は手で触ればわかる。図面の一言（バリ取り・保護フィルム指定）が現場の手間と品質を決める。",
+    points: [{ x: 50, y: 45, t: "仕上げ＝品質の最後の砦" }],
+    credit: "写真: Brittany Bateman（Public domain／Wikimedia Commons）", vq: "板金 バリ取り 仕上げ" }
+};
+function openPhoto() {
+  const P = cur ? PHOTOS[cur.id] : null;
+  if (!P) return;
+  vib(10);
+  $("pmTitle").textContent = "📷 " + P.title;
+  $("pmCap").textContent = P.cap;
+  $("pmCredit").textContent = P.credit;
+  const fig = $("pmFig");
+  fig.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = P.img;
+  img.alt = P.title;
+  fig.appendChild(img);
+  P.points.forEach((pt, i) => {
+    const m = document.createElement("div");
+    m.className = "pm-marker";
+    m.style.left = pt.x + "%";
+    m.style.top = pt.y + "%";
+    const dot = document.createElement("span");
+    dot.className = "pm-dot";
+    dot.style.animationDelay = (i * 0.5) + "s";
+    const lab = document.createElement("span");
+    lab.className = "pm-label";
+    lab.textContent = pt.t;
+    m.appendChild(dot);
+    m.appendChild(lab);
+    fig.appendChild(m);
+  });
+  $("pmVideo").href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(P.vq);
+  $("photoModal").style.display = "flex";
+}
+$("btnPhoto").addEventListener("click", openPhoto);
+$("pmClose").addEventListener("click", () => { $("photoModal").style.display = "none"; });
+$("photoModal").addEventListener("click", (e) => { if (e.target === $("photoModal")) $("photoModal").style.display = "none"; });
 
 function onLoadInput() {
   const v = +$("loadRange").value;
@@ -2149,6 +3510,7 @@ function startQuiz() {
   const qz = cur.quiz;
   $("qzQ").textContent = qz.q;
   $("qzExp").style.display = "none";
+  $("qzConf").style.display = "none";
   $("btnQuizDone").style.display = "none";
   const wrap = $("qzOpts");
   wrap.innerHTML = "";
@@ -2160,14 +3522,29 @@ function startQuiz() {
     b.addEventListener("click", () => {
       if (answered) return;
       answered = true;
-      wrap.querySelectorAll(".opt").forEach((x, xi) => {
-        if (xi === qz.ans) x.classList.add("correct");
-        else if (xi === idx) x.classList.add("wrong");
-        else x.classList.add("dim");
+      const correct = idx === qz.ans;
+      askConfidence("qzConf", "qzConfHi", "qzConfMid", (conf) => {
+        wrap.querySelectorAll(".opt").forEach((x, xi) => {
+          if (xi === qz.ans) x.classList.add("correct");
+          else if (xi === idx) x.classList.add("wrong");
+          else x.classList.add("dim");
+        });
+        let exp = qz.exp;
+        const note = teachFindFor("bend", cur.id);
+        if (note) exp += "<br><br>🎓 あの日の俺:『" + note.txt + "』";
+        $("qzExp").innerHTML = exp;
+        $("qzExp").style.display = "block";
+        $("btnQuizDone").style.display = "block";
+        const xp = confidenceXP(conf, correct);
+        if (xp) addXP(xp);
+        if (conf === "hi") calibRecord(correct); /* 較正対象は💪回答のみ */
+        if (conf === "hi" && !correct) {
+          rqUpsertPriority("quiz-" + cur.id, { q: qz.q, opts: qz.opts, ans: qz.ans, exp: qz.exp, app: "bend", tag: cur.id });
+        } else if (!correct) {
+          rqUpsert("quiz-" + cur.id, { q: qz.q, opts: qz.opts, ans: qz.ans, exp: qz.exp, app: "bend", tag: cur.id });
+        }
+        if (correct) freshTouch(cur.id);
       });
-      $("qzExp").innerHTML = qz.exp;
-      $("qzExp").style.display = "block";
-      $("btnQuizDone").style.display = "block";
     });
     wrap.appendChild(b);
   });
@@ -2177,12 +3554,25 @@ $("btnQuizDone").addEventListener("click", () => {
   progress.done[cur.id] = true;
   bumpStreak();
   saveProgress();
+  freshTouch(cur.id);
+  addXP(20);
   $("clearStamp").innerHTML = cur.tag + " CLEAR!<small>今朝の15分 完了</small>";
   $("teaserBox").innerHTML = "🔮 <b>これが分かると…</b><br>" + (cur.teaser || "");
   const s = progress.streak;
   $("clearMsg").innerHTML = "🔥 " + s.n + "週れんぞく<br>" + (curIdx < LESSONS.length - 1 ? "次回：" + LESSONS[curIdx + 1].tag + " " + LESSONS[curIdx + 1].title : "次回：章ボス戦！");
+  $("teachInputLesson").value = "";
+  $("teachFbLesson").style.display = "none";
   setPhase("phClear");
+  spinGacha(1, false);
 });
+$("btnTeachSendLesson").addEventListener("click", () => {
+  const txt = $("teachInputLesson").value.trim();
+  if (!txt) return;
+  teachSave("bend", cur.id, txt);
+  addXP(5);
+  $("teachFbLesson").style.display = "block";
+});
+$("btnTeachSkipLesson").addEventListener("click", () => { $("teachFbLesson").style.display = "none"; });
 
 $("btnGoHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
 $("btnBack").addEventListener("click", () => { renderHome(); showView("viewHome"); });
@@ -2203,6 +3593,7 @@ function renderBossQ() {
   $("bsProgress").textContent = "第" + (bIdx + 1) + "問 ／ 7問中 ── 正解 " + bScore;
   $("bsQ").textContent = q.q;
   $("bsExp").style.display = "none";
+  $("bsConf").style.display = "none";
   $("btnBossNext").style.display = "none";
   const wrap = $("bsOpts");
   wrap.innerHTML = "";
@@ -2214,16 +3605,25 @@ function renderBossQ() {
     b.addEventListener("click", () => {
       if (answered) return;
       answered = true;
-      if (idx === q.ans) bScore++;
-      wrap.querySelectorAll(".opt").forEach((x, xi) => {
-        if (xi === q.ans) x.classList.add("correct");
-        else if (xi === idx) x.classList.add("wrong");
-        else x.classList.add("dim");
+      const correct = idx === q.ans;
+      askConfidence("bsConf", "bsConfHi", "bsConfMid", (conf) => {
+        if (correct) { bScore++; vib([16, 30, 10]); }
+        wrap.querySelectorAll(".opt").forEach((x, xi) => {
+          if (xi === q.ans) x.classList.add("correct");
+          else if (xi === idx) x.classList.add("wrong");
+          else x.classList.add("dim");
+        });
+        $("bsExp").innerHTML = q.exp;
+        $("bsExp").style.display = "block";
+        $("btnBossNext").style.display = "block";
+        $("btnBossNext").textContent = bIdx < BOSS.length - 1 ? "つぎ →" : "結果を見る →";
+        const xp = confidenceXP(conf, correct);
+        if (xp) addXP(xp);
+        if (conf === "hi") calibRecord(correct);
+        const bId = "boss-" + bIdx;
+        if (conf === "hi" && !correct) rqUpsertPriority(bId, { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp, app: "bend", tag: "l7" });
+        else if (!correct) rqUpsert(bId, { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp, app: "bend", tag: "l7" });
       });
-      $("bsExp").innerHTML = q.exp;
-      $("bsExp").style.display = "block";
-      $("btnBossNext").style.display = "block";
-      $("btnBossNext").textContent = bIdx < BOSS.length - 1 ? "つぎ →" : "結果を見る →";
     });
     wrap.appendChild(b);
   });
@@ -2234,18 +3634,409 @@ $("btnBossNext").addEventListener("click", () => {
     $("bossPlay").style.display = "none";
     $("bossResult").style.display = "block";
     $("bsScore").textContent = bScore + " / 7";
+    const teachBox = $("bossTeachBox");
     if (bScore >= 5) {
+      const firstPass = !progress.done["l7"];
       progress.done["l7"] = true;
       bumpStreak();
       saveProgress();
+      freshTouch("l7");
+      addXP(40);
       $("bsMsg").innerHTML = "🏆 第1章 制覇！<br>第2章「図面と現場へ」は次のアップデートで配信。<br>それまで週1でボス戦の復習もアリ。";
+      teachBox.style.display = "block";
+      $("teachInputBoss").value = "";
+      $("teachFbBoss").style.display = "none";
+      spinGacha(2, firstPass);
     } else {
       $("bsMsg").innerHTML = "あと少し！ 5問正解でクリア。<br>まちがえたレッスンを触り直してから再挑戦。";
+      teachBox.style.display = "none";
     }
   }
 });
+$("btnTeachSendBoss").addEventListener("click", () => {
+  const txt = $("teachInputBoss").value.trim();
+  if (!txt) return;
+  teachSave("bend", "l7", txt);
+  addXP(5);
+  $("teachFbBoss").style.display = "block";
+});
+$("btnTeachSkipBoss").addEventListener("click", () => { $("teachFbBoss").style.display = "none"; });
 $("btnBossHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
 $("btnBackB").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   ⚔ 板金設計判断ドリル（5問・OK/NG即断＋自信ベット）
+================================================================ */
+let dSet = [], dIdx = 0, dScore = 0, dResults = [];
+function openDrill() {
+  dSet = pickDrillSet(5);
+  dIdx = 0; dScore = 0; dResults = [];
+  showView("viewDrill");
+  $("drillPlay").style.display = "block";
+  $("drillResult").style.display = "none";
+  renderDrillQ();
+}
+function renderDrillQ() {
+  const d = dSet[dIdx];
+  $("dqProgress").textContent = "第" + (dIdx + 1) + "問 ／ 5問中 ── 正解 " + dScore;
+  $("dqText").textContent = d.situation;
+  $("dqTag").textContent = "分野：" + d.tag;
+  $("dqExp").style.display = "none";
+  $("dqConf").style.display = "none";
+  $("btnDrillNext").style.display = "none";
+  const okBtn = $("btnOK"), ngBtn = $("btnNG");
+  okBtn.className = ""; ngBtn.className = "";
+  okBtn.disabled = false; ngBtn.disabled = false;
+  let answered = false;
+  function reveal(choice, conf) {
+    okBtn.disabled = true; ngBtn.disabled = true;
+    const correct = choice === d.ans;
+    drillStats.seen[d.id] = true;
+    drillStats.totalCount = (drillStats.totalCount || 0) + 1;
+    if (correct) {
+      drillStats.correctCount = (drillStats.correctCount || 0) + 1;
+      drillStats.wrong[d.id] = 0;
+      dScore++;
+      const lid = DRILL_TAG_LESSON[d.id.replace(/[0-9]+$/, "")];
+      if (lid) freshTouch(lid);
+    } else {
+      drillStats.wrong[d.id] = (drillStats.wrong[d.id] || 0) + 1;
+      const payload = { q: d.situation, opts: ["OK", "NG"], ans: d.ans === "OK" ? 0 : 1, exp: d.reason + " " + d.fix, app: "bend", tag: d.id, drill: true };
+      if (conf === "hi") rqUpsertPriority("drill-" + d.id, payload);
+      else rqUpsert("drill-" + d.id, payload);
+    }
+    saveDrillStats();
+    dResults.push(correct);
+    const pickBtn = choice === "OK" ? okBtn : ngBtn;
+    const otherBtn = choice === "OK" ? ngBtn : okBtn;
+    pickBtn.classList.add(correct ? "correct" : "wrong");
+    if (d.ans !== choice) (d.ans === "OK" ? okBtn : ngBtn).classList.add("correct");
+    otherBtn.classList.add("dim");
+    $("dqExp").innerHTML = "<b>正解：" + d.ans + "</b><br>" + d.reason + "<br>" + d.fix;
+    $("dqExp").style.display = "block";
+    $("btnDrillNext").style.display = "block";
+    $("btnDrillNext").textContent = dIdx < dSet.length - 1 ? "つぎ →" : "結果を見る →";
+    const xp = confidenceXP(conf, correct);
+    if (xp) addXP(xp);
+    if (conf === "hi") calibRecord(correct);
+    vib(correct ? [20, 20, 40] : 30);
+  }
+  function pick(choice) {
+    if (answered) return;
+    answered = true;
+    askConfidence("dqConf", "dqConfHi", "dqConfMid", (conf) => reveal(choice, conf));
+  }
+  okBtn.onclick = () => pick("OK");
+  ngBtn.onclick = () => pick("NG");
+}
+$("btnDrillNext").addEventListener("click", () => {
+  if (dIdx < dSet.length - 1) { dIdx++; renderDrillQ(); }
+  else {
+    $("drillPlay").style.display = "none";
+    $("drillResult").style.display = "block";
+    $("dResultScore").textContent = dScore + " / 5";
+    $("dResultRow").innerHTML = dResults.map((r) => '<span class="' + (r ? "o" : "x") + '">' + (r ? "○" : "×") + "</span>").join("");
+    const tagCount = {};
+    Object.keys(drillStats.wrong).forEach((id) => {
+      if (drillStats.wrong[id] > 0) {
+        const d = DRILLS.find((x) => x.id === id);
+        if (d) { const t = d.tag.split("(")[0]; tagCount[t] = (tagCount[t] || 0) + drillStats.wrong[id]; }
+      }
+    });
+    const weakSorted = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
+    const total = drillStats.totalCount || 1;
+    const rate = Math.round(((drillStats.correctCount || 0) / total) * 100);
+    $("dWeak").innerHTML = "通算正答率 <b>" + rate + "%</b>（" + (drillStats.correctCount || 0) + "/" + total + "問）<br>" +
+      (weakSorted.length ? "弱点分野：<b>" + weakSorted.slice(0, 2).join("・") + "</b>（復習キューに登録済み）" : "まだ弱点なし。いいペース！");
+  }
+});
+$("btnDrillResultHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+$("btnBackD").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+$("btnDrillHome").addEventListener("click", openDrill);
+
+/* ================================================================
+   ⚡ 復習キュー（間隔反復・上限5問・自信ベット）
+================================================================ */
+let rqSet = [], rqIdx = 0, rqScore = 0;
+function rqResolveQuestion(item) {
+  if (!item || !item.q || !Array.isArray(item.opts)) return null;
+  return { q: item.q, opts: item.opts, ans: item.ans, exp: item.exp, drill: !!item.drill, app: item.app || "bend", tag: item.tag };
+}
+function openReview() {
+  rqSet = rqDueList().map((item) => ({ item, q: rqResolveQuestion(item) })).filter((x) => x.q);
+  if (!rqSet.length) { renderHome(); showView("viewHome"); return; }
+  rqIdx = 0; rqScore = 0;
+  repaintLessonId = null;
+  showView("viewReview");
+  $("reviewPlay").style.display = "block";
+  $("reviewResult").style.display = "none";
+  $("reviewResultMsg").textContent = "🔥 忘れかけた記憶をしっかり固定した";
+  renderRQQ();
+}
+function renderRQQ() {
+  const { item, q } = rqSet[rqIdx];
+  $("rqProgress").textContent = "第" + (rqIdx + 1) + "問 ／ " + rqSet.length + "問中（忘れかけた頃の再登場）";
+  $("rqText").textContent = q.q;
+  $("rqExp").style.display = "none";
+  $("rqConf").style.display = "none";
+  $("btnRQNext").style.display = "none";
+  const wrap = $("rqOpts");
+  wrap.innerHTML = "";
+  let answered = false;
+  q.opts.forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = q.drill ? o : (idx + 1) + ". " + o;
+    b.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      const correct = idx === q.ans;
+      askConfidence("rqConf", "rqConfHi", "rqConfMid", (conf) => {
+        if (correct) rqScore++;
+        rqAnswer(item, correct);
+        wrap.querySelectorAll(".opt").forEach((x, xi) => {
+          if (xi === q.ans) x.classList.add("correct");
+          else if (xi === idx) x.classList.add("wrong");
+          else x.classList.add("dim");
+        });
+        let exp = q.exp;
+        if (q.tag) {
+          const note = teachFindFor(q.app || "bend", q.tag);
+          if (note) exp += "<br><br>🎓 あの日の俺:『" + note.txt + "』";
+        }
+        $("rqExp").innerHTML = exp;
+        $("rqExp").style.display = "block";
+        $("btnRQNext").style.display = "block";
+        $("btnRQNext").textContent = rqIdx < rqSet.length - 1 ? "つぎ →" : "結果を見る →";
+        const xp = confidenceXP(conf, correct);
+        if (xp) addXP(xp);
+        if (conf === "hi") calibRecord(correct);
+        if (correct && q.tag) freshTouch(q.tag);
+      });
+    });
+    wrap.appendChild(b);
+  });
+}
+/* btnRQNext/btnRQHomeは通常RQと再塗装フローで画面を共用するため、
+   repaintLessonIdの有無で分岐する1本のハンドラにまとめる（二重発火防止）。 */
+$("btnRQNext").addEventListener("click", () => {
+  if (repaintLessonId !== null) {
+    if (repaintIdx < repaintSet.length - 1) { repaintIdx++; renderRepaintQ(); }
+    else { finishRepaint(); repaintLessonId = null; }
+    return;
+  }
+  if (rqIdx < rqSet.length - 1) { rqIdx++; renderRQQ(); }
+  else {
+    $("reviewPlay").style.display = "none";
+    $("reviewResult").style.display = "block";
+    $("rqResultScore").textContent = rqScore + " / " + rqSet.length;
+    bumpStreak();
+    saveProgress();
+  }
+});
+$("btnRQHome").addEventListener("click", () => { repaintLessonId = null; renderHome(); showView("viewHome"); });
+$("btnBackRQ").addEventListener("click", () => { repaintLessonId = null; renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   🦠 再塗装フロー（錆ノードをタップ→レッスンのクイズ＋ミッション問の
+   計2問→全問答えたらfresh更新＋再塗装アニメ＋XP+10）
+================================================================ */
+let repaintSet = [], repaintIdx = 0, repaintLessonId = null, repaintCount = 0;
+function openRepaint(lessonId) {
+  const L = LESSONS.find((x) => x.id === lessonId);
+  if (!L) return;
+  repaintLessonId = lessonId;
+  repaintIdx = 0;
+  repaintSet = [
+    { q: L.mission.q.replace(/<br>/g, " "), opts: L.mission.opts, ans: L.mission.ans, exp: L.mission.ansLine },
+    { q: L.quiz.q, opts: L.quiz.opts, ans: L.quiz.ans, exp: L.quiz.exp }
+  ];
+  showView("viewReview");
+  $("reviewPlay").style.display = "block";
+  $("reviewResult").style.display = "none";
+  renderRepaintQ();
+}
+function renderRepaintQ() {
+  const q = repaintSet[repaintIdx];
+  $("rqProgress").textContent = "🦠 再塗装 " + (repaintIdx + 1) + " ／ " + repaintSet.length + "問（サビ落とし）";
+  $("rqText").textContent = q.q;
+  $("rqExp").style.display = "none";
+  $("rqConf").style.display = "none";
+  $("btnRQNext").style.display = "none";
+  const wrap = $("rqOpts");
+  wrap.innerHTML = "";
+  let answered = false;
+  q.opts.forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = (idx + 1) + ". " + o;
+    b.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      const correct = idx === q.ans;
+      wrap.querySelectorAll(".opt").forEach((x, xi) => {
+        if (xi === q.ans) x.classList.add("correct");
+        else if (xi === idx) x.classList.add("wrong");
+        else x.classList.add("dim");
+      });
+      $("rqExp").innerHTML = q.exp;
+      $("rqExp").style.display = "block";
+      $("btnRQNext").style.display = "block";
+      $("btnRQNext").textContent = repaintIdx < repaintSet.length - 1 ? "つぎ →" : "再塗装する →";
+    });
+    wrap.appendChild(b);
+  });
+}
+function finishRepaint() {
+  freshTouch(repaintLessonId);
+  window.__justRepainted = { id: repaintLessonId, ts: Date.now() };
+  addXP(10);
+  repaintCount++;
+  const doGacha = repaintCount % 3 === 0;
+  $("reviewPlay").style.display = "none";
+  $("reviewResult").style.display = "block";
+  $("rqResultScore").textContent = "🦠→✨";
+  $("reviewResultMsg").textContent = "🦠 錆を落として再塗装した（+10XP）";
+  if (doGacha) spinGacha(1, false);
+}
+
+/* ================================================================
+   🔀 FORGE DAILY（家族ミックス最大5問・自信ベット・書き戻し）
+================================================================ */
+let dySet = [], dyIdx = 0, dyScore = 0;
+function openDaily() {
+  dySet = dailyBuildSet();
+  if (dySet.length < 2) { renderHome(); showView("viewHome"); return; }
+  dyIdx = 0; dyScore = 0;
+  showView("viewDaily");
+  $("dailyPlay").style.display = "block";
+  $("dailyResult").style.display = "none";
+  renderDailyQ();
+}
+function renderDailyQ() {
+  const entry = dySet[dyIdx];
+  const q = entry.item;
+  $("dyAppChip").textContent = (APP_EMOJI[entry.app] || "❓") + " " + (APP_NAME[entry.app] || entry.app.toUpperCase());
+  $("dyProgress").textContent = "第" + (dyIdx + 1) + "問 ／ " + dySet.length + "問中（家族ミックス）";
+  $("dyText").textContent = q.q;
+  $("dyExp").style.display = "none";
+  $("dyConf").style.display = "none";
+  $("btnDailyNext").style.display = "none";
+  const wrap = $("dyOpts");
+  wrap.innerHTML = "";
+  let answered = false;
+  (q.opts || []).forEach((o, idx) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = q.drill ? o : (idx + 1) + ". " + o;
+    b.addEventListener("click", () => {
+      if (answered) return;
+      answered = true;
+      const correct = idx === q.ans;
+      askConfidence("dyConf", "dyConfHi", "dyConfMid", (conf) => {
+        if (correct) dyScore++;
+        dailyWriteBack(entry, correct);
+        wrap.querySelectorAll(".opt").forEach((x, xi) => {
+          if (xi === q.ans) x.classList.add("correct");
+          else if (xi === idx) x.classList.add("wrong");
+          else x.classList.add("dim");
+        });
+        $("dyExp").innerHTML = q.exp || "";
+        $("dyExp").style.display = "block";
+        $("btnDailyNext").style.display = "block";
+        $("btnDailyNext").textContent = dyIdx < dySet.length - 1 ? "つぎ →" : "結果を見る →";
+        const xp = confidenceXP(conf, correct);
+        if (xp) addXP(xp);
+        if (conf === "hi") calibRecord(correct);
+        if (correct && entry.app === "bend" && q.tag) freshTouch(q.tag);
+      });
+    });
+    wrap.appendChild(b);
+  });
+}
+$("btnDailyNext").addEventListener("click", () => {
+  if (dyIdx < dySet.length - 1) { dyIdx++; renderDailyQ(); }
+  else {
+    $("dailyPlay").style.display = "none";
+    $("dailyResult").style.display = "block";
+    $("dyResultScore").textContent = dyScore + " / " + dySet.length;
+    dailyMarkDone(dySet.length);
+    addXP(15);
+    spinGacha(1, false);
+  }
+});
+$("btnDailyHome").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+$("btnBackDaily").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   🛣 板金街道マスターマップ
+================================================================ */
+const MASTER_MAP = [
+  { stage: "Stage1", desc: "第1章 曲げのきそ（本作・現在地）" },
+  { stage: "Stage2", desc: "第2章 図面と現場" },
+  { stage: "Stage3", desc: "第3章 溶接と組立の板金設計" },
+  { stage: "Stage4", desc: "第4章 コスト設計の達人" }
+];
+function renderMap() {
+  const wrap = $("mapStage");
+  wrap.innerHTML = "";
+  MASTER_MAP.forEach((st, si) => {
+    const box = document.createElement("div");
+    box.className = "mapstagebox" + (si === 0 ? " current" : "");
+    const pin = si === 0 ? '<span class="mspin">📍現在地</span>' : "";
+    box.innerHTML = '<div class="msTitle">' + st.stage + " " + pin + '</div><div class="msDesc">' + st.desc + "</div>";
+    const chapsWrap = document.createElement("div");
+    chapsWrap.className = "mapchaps";
+    if (si === 0) {
+      const labels = LESSONS.map((L) => L.tag + " " + L.label).concat(["L7 ボス"]);
+      labels.forEach((lb, i) => {
+        const chip = document.createElement("span");
+        const id = PROG_KEYS[i];
+        const done = !!progress.done[id];
+        const now = !done && lessonState(i) === "now";
+        const rustCls = done ? rustClassOf(id, true) : "";
+        chip.className = "mapchap" + (done ? " done" : now ? " now" : "") + (rustCls ? " " + rustCls : "");
+        chip.textContent = (done ? "✓ " : "") + lb + (rustCls === "rust1" ? " 🦠" : rustCls === "rust2" ? " 🦠🦠" : "");
+        if (done && (rustCls === "rust1" || rustCls === "rust2")) {
+          chip.style.cursor = "pointer";
+          chip.addEventListener("click", () => openRepaint(id));
+        }
+        chapsWrap.appendChild(chip);
+      });
+    } else {
+      const chip = document.createElement("span");
+      chip.className = "mapchap";
+      chip.textContent = "🔒 次のアップデートで配信";
+      chapsWrap.appendChild(chip);
+    }
+    box.appendChild(chapsWrap);
+    wrap.appendChild(box);
+  });
+}
+$("btnMapHome").addEventListener("click", () => { renderMap(); showView("viewMap"); });
+$("btnBackMap").addEventListener("click", () => { renderHome(); showView("viewHome"); });
+
+/* ================================================================
+   📖 俺の言葉ノート（全アプリ横断・新しい順）
+================================================================ */
+function renderNotebook() {
+  const wrap = $("nbList");
+  const notes = teachAllNotes();
+  if (!notes.length) {
+    wrap.innerHTML = '<div class="nb-empty">まだ何も書いていない。レッスンをクリアすると新人への一言を書けるようになる。</div>';
+    return;
+  }
+  wrap.innerHTML = notes.slice(0, 80).map((n) => {
+    const app = n.app || "bend";
+    const label = (APP_LESSON_LABEL[app] && APP_LESSON_LABEL[app][n.lesson]) || (app === "bend" ? (APP_LESSON_LABEL.bend[n.lesson] || n.lesson) : n.lesson || "");
+    const d = new Date(n.ts || Date.now());
+    const dateStr = (d.getMonth() + 1) + "/" + d.getDate();
+    return '<div class="notebookitem"><div class="nbhead">' + (APP_EMOJI[app] || "❓") + " " + (APP_NAME[app] || app.toUpperCase()) + " ── " + label + " ・ " + dateStr + '</div><div class="nbtxt">' + n.txt.replace(/</g, "&lt;") + "</div></div>";
+  }).join("");
+}
+$("btnNotebook").addEventListener("click", () => { renderNotebook(); $("notebookModal").style.display = "flex"; });
+$("nbClose").addEventListener("click", () => { $("notebookModal").style.display = "none"; });
+$("notebookModal").addEventListener("click", (e) => { if (e.target === $("notebookModal")) $("notebookModal").style.display = "none"; });
 
 /* ================================================================
    起動

@@ -1,5 +1,5 @@
-/* BEND FORGE service worker v1 */
-const CACHE = "bend-forge-v1";
+/* BEND FORGE service worker v2 */
+const CACHE = "bend-forge-cache-v2";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
